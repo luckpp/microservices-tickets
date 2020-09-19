@@ -3,10 +3,10 @@ kind: Deployment
 metadata:
   name: auth-depl
 spec:
-  replicas: 1 
-selector:
-  matchLabels:
-    app: auth
+  replicas: 1
+  selector:
+    matchLabels:
+      app: auth
   template:
     metadata:
       labels:
@@ -16,4 +16,16 @@ selector:
         - name: auth
           image: luckpp/auth
           imagePullPolicy: Never
-
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: auth-srv
+spec:
+  selector:
+    app: auth
+  ports:
+    - name: auth
+      protocol: TCP
+      port: 3000
+      targetPort: 3000
