@@ -27,7 +27,7 @@ Once the `ingress`service is setup you can test the running service:
 
 ## Validation library:
 
-In order to properly validate the data send by clienst over HTTP we should do validation.
+In order to properly validate the data send by clients over HTTP we should do validation.
 One npm module that could be used: `express-validator`:
 `$ npm i express-validator`
 
@@ -38,3 +38,9 @@ Got an error when testing the route handler in Postman? If so, do the following:
 - open the Postman preferences
 - find the setting called **SSL certificate verification**
 - change this setting to **OFF**
+
+## Abstract classes in TS
+
+- they can not be instantiated
+- used to set up requirements for subclasses
+- do create a class when they are translated to JS, so they can be used in `instanceof` checks
