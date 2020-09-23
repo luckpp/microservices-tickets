@@ -26,5 +26,5 @@ spec:
   ports:
     - name: db # used only for logging purpose
       protocol: TCP
-      port: 27027 # by default Mongo DB listens for incoming traffic on this port
-      targetPort: 27027
+      port: 27017 # by default Mongo DB listens for incoming traffic on this port
+      targetPort: 27017
