@@ -1,0 +1,30 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: auth-mongo-depl
+spec:
+  replicas: 1
+  selector: # this is a selector that will be used by the deployment to find the pods that it actually creates
+    matchLabels:
+      app: auth-mongo
+  template:
+    metadata:
+      labels: # this is a label that gets applied to the pod
+        app: auth-mongo
+    spec:
+      containers:
+        - name: auth-mongo
+          image: mongo
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: auth-mongo-srv
+spec:
+  selector: # this selector is telling the service witch pods is going to govern access to
+    app: auth-mongo # find a pod or a set of pods with a label of 'auth-mongo'
+  ports:
+    - name: db # used only for logging purpose
+      protocol: TCP
+      port: 27027 # by default Mongo DB listens for incoming traffic on this port
+      targetPort: 27027
