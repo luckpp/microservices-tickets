@@ -86,3 +86,74 @@ app.all('*', async () => {
   throw new NotFoundError();
 });
 ```
+
+# Disclaimer for the current service
+
+- user auth with microservices is an unsolved problem
+- there are many ways to do user auth, and no one is **_right_**
+
+## The challenge
+
+The challenge is that when a request comes from a user to a microservice, based on a JWR, Cookie, etc., that microservice should decide if that user is authenticated. In order to do so we have several options.
+
+### Fundamental Option #1
+
+Individual services rely on the **auth** service.
+In this case the individual services can make **_sync_** requests to **auth** service.
+
+NOTE: The **_sync_** request in the world of microservices, refers to a direct request from one service to another (one that does not make use of Events or EventBus).
+
+Downsides (same as the downsides of a sync communication):
+
+- all services work only if **auth** service works!
+
+#### Fundamental Option #1.1
+
+Individual services rely on the **auth** service as a gateway.
+In this case all requests pass through **auth** service.
+
+### Fundamental Option #2
+
+Individual services know how to authenticate a user.
+In this case, the logic to inspect JWT/Cookie and decide if the user is authenticated exists in each individual service.
+
+Upsides:
+
+- we do not have any outside dependency
+
+Downside:
+
+- we end up duplicating auth logic between services; this issue can be solved with a shared library
+- for more info see: https://www.udemy.com/course/microservices-with-node-js-and-react/learn/lecture/19119696
+
+### Comparison between Option #1 and Option #2
+
+Option #1:
+
+- changes to auth state are immediately reflected
+- !!! auth service goes down - the entire app is broken
+
+Option #2:
+
+- auth service is down - nobody cares
+- !!! some user got banned - the user still has a valid token that can be used in other services
+
+**NOTE:**
+
+- **in the current implementation we will go with Option #2 just to stick with the idea of independent microservices. Still, we can use a an hybrid implementation with sync and async microservices communication.**
+- more details in: https://www.udemy.com/course/microservices-with-node-js-and-react/learn/lecture/19119722
+
+# Cookies and JWT
+
+## Cookies
+
+- they are a transport mechanism between the browser and the server
+- moves any kind of data between the browser and the server
+- automatically managed by the browser
+
+## JWT
+
+- specially built for authentication and authorization
+- stores any data we want
+- we have to manage it manually
+  - unless we are storing that JWT inside of a cookie
