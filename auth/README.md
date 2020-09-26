@@ -157,3 +157,37 @@ Option #2:
 - stores any data we want
 - we have to manage it manually
   - unless we are storing that JWT inside of a cookie
+
+# Requirements for auth mechanism
+
+- must be able to tell us details about the user
+- must be able to handle authorization info
+- must have a built-in, tamper resistant way to expire or invalidate itself
+- must be easily understood between different languages
+- must not require some kind of backing data store on server
+
+NOTE: all the requirements above lead us to **JWT**
+
+## Include the JWT in the HTTP request
+
+One can choose between several places to include the JWT:
+
+- in the **request header**
+  - `Authorization`: `JWT`
+- in the **request body**
+  - `token`: `JWT`
+- as a cookie in the **request header** (in this case we rely on the browser to manage the cookie)
+  - `Cookie`: `JWT`
+
+In order to choose the proper option you should take in consideration how the client app is built:
+
+1. When implementing for example a normal React app the app is loaded in the browser, so js code is loaded and executed and only after that request for data is made from the browser. In this case all options to include the JWT are viable, since the JWT should be included only on data request.
+
+2. When implementing for example a server-side rendered React app, that means that on the server side the app HTML is being build and the HTML includes also the data. In this case only using the JWT as cookie is viable since the JWT has to be provided on the initial request and should be used on server-side to request data that is included in the HTML.
+
+**Conclusion: We will use JWT as authentication mechanism and we are going to manage this JWT through the use of cookies.**
+
+Cookies:
+
+- in order for the server to include a cookie in the response it will use the `Set-Cookie` header
+- we will automatically manage the cookies using a helper library to read data out of the cookie: `cookie-session` (https://www.npmjs.com/package/cookie-session)
