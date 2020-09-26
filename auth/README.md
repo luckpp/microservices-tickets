@@ -193,3 +193,8 @@ Cookies:
 - we will automatically manage the cookies using a helper library to read data out of the cookie: `cookie-session` (https://www.npmjs.com/package/cookie-session)
 
 `$ npm i cookie-session @types/cookie-session`
+
+NOTE:
+
+- the cookie will be sent to UI in base64 format. In order to decode it use https://www.base64decode.org/
+- in order to verify the JWT inside the cookie go to https://jwt.io/ and input first your secret and than the token to be verified

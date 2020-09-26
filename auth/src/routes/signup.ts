@@ -44,6 +44,7 @@ router.post(
 
     // store the JWT on the session object
     //  - we create a new object since req.session might be null
+    // this session object will be sent to the client in base64 format
     req.session = {
       jwt: userJwt,
     };
