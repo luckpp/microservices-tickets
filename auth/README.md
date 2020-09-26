@@ -198,3 +198,6 @@ NOTE:
 
 - the cookie will be sent to UI in base64 format. In order to decode it use https://www.base64decode.org/
 - in order to verify the JWT inside the cookie go to https://jwt.io/ and input first your secret and than the token to be verified
+
+In order to create a secret inside the Kubernetes cluster run:
+`$ kubectl create secret generic jwt-secret --from-literal=JWT_JEY=asdf`

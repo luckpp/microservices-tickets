@@ -39,7 +39,7 @@ router.post(
         id: user.id,
         email: user.email,
       },
-      'secretOrPrivateKey'
+      process.env.JWT_KEY! // the ! tells TypeScript that we know for sure that the env variable is defined
     );
 
     // store the JWT on the session object
