@@ -191,3 +191,5 @@ Cookies:
 
 - in order for the server to include a cookie in the response it will use the `Set-Cookie` header
 - we will automatically manage the cookies using a helper library to read data out of the cookie: `cookie-session` (https://www.npmjs.com/package/cookie-session)
+
+`$ npm i cookie-session @types/cookie-session`
