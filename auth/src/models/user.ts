@@ -18,16 +18,35 @@ interface UserDoc extends mongoose.Document {
   password: string;
 }
 
-const userSchema = new mongoose.Schema({
-  email: {
-    type: String,
-    required: true,
+const userSchema = new mongoose.Schema(
+  {
+    email: {
+      type: String,
+      required: true,
+    },
+    password: {
+      type: String,
+      required: true,
+    },
   },
-  password: {
-    type: String,
-    required: true,
-  },
-});
+  {
+    // we pass here a set of customization objects that describes how to serialize our document into JSON
+    // NOTE:
+    //   - that the method below only affects the serialization result of the document!
+    //   - it is atypical to put this logic inside the model definition file since we define how the data should
+    //     be viewed; so we are defining a VIEW related responsibility, not the best approach but this servers our purpose
+    toJSON: {
+      transform(doc, ret) {
+        ret.id = ret._id;
+        delete ret._id;
+        delete ret.password;
+        // delete ret.__v;
+      },
+      // or use instead of transform() - delete ret.__v;
+      versionKey: false,
+    },
+  }
+);
 
 // this is a middleware function implemented in Mongoose
 // notice that we use the 'function' keyword as opposed to the arrow function (done) => { ... }
