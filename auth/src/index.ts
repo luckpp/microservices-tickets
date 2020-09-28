@@ -38,6 +38,7 @@ app.all('*', async () => {
 app.use(errorHandler);
 
 const start = async () => {
+  // Here would be a good place to init a config object and use it to access the Env Variables
   if (!process.env.JWT_KEY) {
     throw new Error('JWT_KEY must be defined');
   }
