@@ -214,5 +214,24 @@ In order to wire up the testing components several steps have to be done:
   - run assertions to make sure the requests did the right thing
 
 Install the following packages as dev dependencies:
+`$ npm i --save-dev @types/jest @types/supertest jest ts-jest supertest mongodb-memory-server`
 
-- `$ npm i --save-dev @types/jest @types/supertest jest ts-jest supertest mongodb-memory-server`
+Update the package.json with the following npm script:
+`"test": "jest --watchAll --no-cache"`
+
+- --watchAll: will re-run all the tests inside the project whenever file changes
+- --no-cache: jest does not have TS and will have difficulties understand when a TS file changes
+
+Update the package.json with the jest configuration:
+
+```json
+  "jest": {
+    "preset": "ts-jest",
+    "testEnvironment": "node",
+    "setupFilesAfterEnv": [
+      "./src/test/setup.ts"
+    ]
+  },
+```
+
+Update the `./src/test/setup.ts` with the setup required before running tests.
