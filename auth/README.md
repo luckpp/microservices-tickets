@@ -210,7 +210,7 @@ In order to wire up the testing components several steps have to be done:
 - when running the command above start a test runner called **Jest** (Jest is the library that we will use to execute tests inside of our project); as a consequence, Jest will do the following steps:
   - start an in-memory copy of MongoDB (no MOngoDB should be installed)
   - start up our `express` app
-  - use **supertest** library to make fake requests tou our express app
+  - use **supertest** library to make fake requests tou our express app (that is why we need to expose the app)
   - run assertions to make sure the requests did the right thing
 
 Install the following packages as dev dependencies:
@@ -235,3 +235,9 @@ Update the package.json with the jest configuration:
 ```
 
 Update the `./src/test/setup.ts` with the setup required before running tests.
+
+NOTE:
+
+- the jest convention is that whenever you want to test a file for example **signup.ts** you make a folder on the same level called \***\*test\*\*** and add inside this folder a file called **signup.test.ts**
+- make sure to define all environment variables used inside the code that is under test
+- **jest** does not have support for TypeScript out of the box, and that is the reason we use the **ts-jest** library which gives jest the ability to understand TypeScript; still one of those tools (jest or ts-jest) do not detect changes made to the `*.ts` files -> so you will have to restart jest

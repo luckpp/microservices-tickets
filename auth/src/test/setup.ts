@@ -5,16 +5,18 @@ import { app } from '../app';
 let mongo: any;
 
 beforeAll(async () => {
+  process.env.JWT_KEY = 'asdf'; // probably this is not the best place to set up the Env Variable for testing environment
+
   mongo = new MongoMemoryServer();
   const mongoUri = await mongo.getUri();
-  mongoose.connect(mongoUri, {
+  await mongoose.connect(mongoUri, {
     useNewUrlParser: true,
     useUnifiedTopology: true,
   });
 });
 
 beforeEach(async () => {
-  const collections = await mongoose.connection.db.collections();
+  const collections = await mongoose.connection.db?.collections();
 
   for (let collection of collections) {
     await collection.deleteMany({});
