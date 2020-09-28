@@ -201,3 +201,18 @@ NOTE:
 
 In order to create a secret inside the Kubernetes cluster run:
 `$ kubectl create secret generic jwt-secret --from-literal=JWT_JEY=asdf`
+
+# Testing
+
+In order to wire up the testing components several steps have to be done:
+
+- update the `package.json` with a new script: `npm run test`
+- when running the command above start a test runner called **Jest** (Jest is the library that we will use to execute tests inside of our project); as a consequence, Jest will do the following steps:
+  - start an in-memory copy of MongoDB (no MOngoDB should be installed)
+  - start up our `express` app
+  - use **supertest** library to make fake requests tou our express app
+  - run assertions to make sure the requests did the right thing
+
+Install the following packages as dev dependencies:
+
+- `$ npm i --save-dev @types/jest @types/supertest jest ts-jest supertest mongodb-memory-server`
