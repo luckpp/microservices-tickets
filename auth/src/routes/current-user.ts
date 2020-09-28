@@ -1,9 +1,20 @@
-import express from 'express';
+import express, { Request, Response } from 'express';
+import jwt from 'jsonwebtoken';
 
 const router = express.Router();
 
-router.get('/api/users/currentuser', (req, res) => {
-  res.send('Hello from Router!');
+router.get('/api/users/currentuser', (req: Request, res: Response) => {
+  // the check below is equivalent to (!req.session || !req.session.jwt)
+  if (!req.session?.jwt) {
+    return res.send({ currentUser: null });
+  }
+
+  try {
+    const payload = jwt.verify(req.session.jwt, process.env.JWT_KEY!);
+    res.send({ currentUser: payload });
+  } catch (err) {
+    res.send({ currentUser: null });
+  }
 });
 
 export { router as currentUserRouter };
