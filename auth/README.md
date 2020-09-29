@@ -241,3 +241,13 @@ NOTE:
 - the jest convention is that whenever you want to test a file for example **signup.ts** you make a folder on the same level called \***\*test\*\*** and add inside this folder a file called **signup.test.ts**
 - make sure to define all environment variables used inside the code that is under test
 - **jest** does not have support for TypeScript out of the box, and that is the reason we use the **ts-jest** library which gives jest the ability to understand TypeScript; still one of those tools (jest or ts-jest) do not detect changes made to the `*.ts` files -> so you will have to restart jest
+
+Example of test:
+
+```ts
+it('returns a 400 with missing email and password', async () => {
+  // you could either return the request and jest will await it for us
+  // or you could await it yourself
+  await request(app).post('/api/users/signup').send({}).expect(400);
+});
+```
