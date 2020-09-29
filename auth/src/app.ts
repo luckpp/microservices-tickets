@@ -20,7 +20,8 @@ app.use(json());
 app.use(
   cookieSession({
     signed: false, // we will not use encryption since we have encryption in JWT
-    secure: true, // cookies will be used only if the user is visiting our application over HTTPS connection
+    // secure: true, // cookies will be used only if the user is visiting our application over HTTPS connection
+    secure: process.env.NODE_ENV !== 'test', // instead of had-coding 'true' like above, we allow cookies also in the test environment
   })
 );
 

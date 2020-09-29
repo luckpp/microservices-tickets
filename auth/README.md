@@ -251,3 +251,11 @@ it('returns a 400 with missing email and password', async () => {
   await request(app).post('/api/users/signup').send({}).expect(400);
 });
 ```
+
+NOTE:
+
+- when running the test environment, **jest** sets an the `NODE_ENV` environment variable to `'test'`:
+
+```ts
+process.env.NODE_ENV === 'test';
+```
