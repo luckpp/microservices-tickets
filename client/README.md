@@ -41,4 +41,6 @@ NOTE: 'pages' folder and file names inside map to actual routes
 # Run the Next JS app inside of our Kubernetes cluster
 
 - create the `Dockerfile`
-- create the Kubernetes deployment file
+- create the Kubernetes deployment file for Deployment and Service
+- create the corresponding entry in the Skaffold config file
+- update the **ingress** configuration

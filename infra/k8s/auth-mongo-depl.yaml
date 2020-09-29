@@ -15,7 +15,6 @@ spec:
       containers:
         - name: auth-mongo
           image: mongo:4.4.1
-          imagePullPolicy: Never
 ---
 apiVersion: v1
 kind: Service
