@@ -44,3 +44,23 @@ NOTE: 'pages' folder and file names inside map to actual routes
 - create the Kubernetes deployment file for Deployment and Service
 - create the corresponding entry in the Skaffold config file
 - update the **ingress** configuration
+
+# Next JS and file change detection
+
+- at some points in time, when running your app with Skaffold, you might notice that Next JS might have problems detecting file changes
+- so Next JS is a little bit 'finicky' with file change detection when it is running inside of a docker container
+
+How to solve the issue above:
+
+- create a file called `next.config.js` that is automatically loaded by Next JS when our project starts up
+- inside the file we will change an option that will tell WebPack that rather than watching for file changes in an automated fashion, it should poll all the files inside our project directory, automatically once 300 ms
+
+```js
+// inside next.config.js
+module.exports = {
+  webpackDevMiddleware: (config) => {
+    config.watchOptions.poll = 300;
+    return config;
+  },
+};
+```
