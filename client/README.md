@@ -64,3 +64,37 @@ module.exports = {
   },
 };
 ```
+
+# Server side rendering (SSR)
+
+Actions that happen behind the scenes when we make a request to our Next JS application:
+
+- inspect URL of incoming request, determine set of components to show
+- call those component's `getInitialProps` static method
+- render each component with data from `getInitialProps` **one time**
+- assemble HTML from all components, send back response
+
+NOTES:
+
+- `getInitialProps` is specific to Next JS
+- if we decide to implement `getInitialProps`, Next JS is going to call it while attempting to render our application on the server
+- `getInitialProps` is our opportunity to attempt fetch some data, that this component needs during the server side rendering process
+- once `getInitialProps` is invoked, any data that we return from it, usually in the form of an object, is going to be provided to our component as a prop
+- Next JS will assemble the HTML with all required components and sends back the response
+
+```jsx
+const LandingPage = ({ color }) => {
+  console.log('I am in the component', color);
+  return <h1>Landing Page</h1>;
+};
+
+LandingPage.getInitialProps = () => {
+  console.log('I am on the server!');
+
+  return { color: 'red' };
+};
+
+export default LandingPage;
+```
+
+NOTE: **Once our entire application is executed inside the browser, we are not concerned anymore with the `getInitialProps`, and we can continue to fetch data as usual inside the component.**
