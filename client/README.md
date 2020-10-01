@@ -98,3 +98,57 @@ export default LandingPage;
 ```
 
 NOTE: **Once our entire application is executed inside the browser, we are not concerned anymore with the `getInitialProps`, and we can continue to fetch data as usual inside the component.**
+
+## Requests from getInitialProps to other services
+
+Inside a Next JS application, during tha server side rendering process, data from other services might be required. In order to fetch data inside the `getInitialProps` from other services, one has two options.
+
+### Option: Request data directly for other services
+
+For example one could reach directly into: http://auth-srv/api/users/currentuser :
+
+- **auth-srv** is the name of the Kubernetes service that governs access to the **auth** pod
+
+NOTE: **This is not the best option since the Next JS app (the React client app) has to know the name of each service it wants to access.**
+
+### Option: Request data through the ingress-nginx
+
+NOTE:
+
+- **When using this option, the ingress-nginx will figure it out where to send the requests based on the URL path**
+- **ingress-nginx already has the set of routing rules that are configured in the `ingress-srv.yaml`**
+  - it know how to take a request to an arbitrary endpoint and map it to the appropriate service and port
+
+So requests will be made to: http://?????/api/users/currentuser
+
+#### The challenges
+
+The challenge are:
+
+- to figure out how to make requests to ingress-nginx when we are inside the cluster
+- to figure out a way, that when we make a request from Next JS, we take a look at the original incoming request:
+  - extract the `cookie` from the original request
+  - include the `cookie` in the request to ingress-nginx
+
+The solution is described in my blog post: **Kubernetes: Cross Namespace Service Communication**, but still I did not make it to work!!!!
+
+Note: it is very important to customize the requests we make based on the environment:
+
+- requests that come from a component
+  - always issued from the browser, so we use a domain of ''
+- requests from `getInitialProps`
+  - might be executed from the client or the server and we need to figure out what env is so we can use the correct domain
+
+Where and when is `getInitialProps` executed:
+
+- executed on the **server**
+  - on hard refresh of page
+  - clicking link from different domain
+  - typing URL into the address bar
+- executed on the **client**
+  - navigating from one page to another **_while in the app_**
+
+**Conclusion:**
+
+- when we make requests from the component we do not have to worry about the domain
+- when we make requests from the `getInitialProps` we need to take care of the domain based on the environment from which the function is executed
