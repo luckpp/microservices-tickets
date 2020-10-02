@@ -1,12 +1,12 @@
 import axios from 'axios';
 
 const LandingPage = ({ currentUser }) => {
-  console.log(currentUser);
+  console.log('LoadingPage component', currentUser);
 
   return <h1>Landing Page</h1>;
 };
 
-LandingPage.getInitialProps = async () => {
+LandingPage.getInitialProps = async ({ req }) => {
   if (typeof window === 'undefined') {
     // we are on the server
     // -------------------------------------------
@@ -31,9 +31,10 @@ LandingPage.getInitialProps = async () => {
     const { data } = await axios.get(
       'http://ingress-nginx-controller.kube-system.svc.cluster.local/api/users/currentuser',
       {
-        headers: {
-          Host: 'tickets.dev', // we set the same host as the one defined in ingress-srv.yaml in order to pass the routing rules
-        },
+        // headers: {
+        //   Host: 'tickets.dev', // we set the same host as the one defined in ingress-srv.yaml in order to pass the routing rules
+        // },
+        headers: req.headers, // we forward all the headers received from the request; the Host & Cookie should be present there
       }
     );
     // -------------------------------------------

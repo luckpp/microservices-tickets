@@ -130,8 +130,6 @@ The challenge are:
   - extract the `cookie` from the original request
   - include the `cookie` in the request to ingress-nginx
 
-The solution is described in my blog post: **Kubernetes: Cross Namespace Service Communication**.
-
 Note: it is very important to customize the requests we make based on the environment:
 
 - requests that come from a component
@@ -153,6 +151,8 @@ Where and when is `getInitialProps` executed:
 - when we make requests from the component we do not have to worry about the domain
 - when we make requests from the `getInitialProps` we need to take care of the domain based on the environment from which the function is executed
 
+#### Do cross namespace service communication
+
 In order to make the call during the SSR to the proper domain inside `getInitialProps` you should take the following steps:
 
 - `$ minikube addons enable ingress`
@@ -161,3 +161,27 @@ In order to make the call during the SSR to the proper domain inside `getInitial
 - open a new another terminal:
   - `$ kubectl expose deployment ingress-nginx-controller --target-port=80 --type=LoadBalancer -n kube-system`
 - the above cmd will create ingress-nginx-controller service of type LoadBalancer under namespace kube-system. We can access it via "http://SERVICENAME.NAMESPACE.svc.cluster.local" as stated in the course. In my case, http://ingress-nginx-controller.kube-system.svc.cluster.local/api/users/currentuser (ref https://stackoverflow.com/questions/62162209/ingress-nginx-errors-connection-refused)
+
+#### Including the cookie in the requests during SSR
+
+When `getInitialProps` is called on the server, the first argument to the function is an object that is going to have a couple of properties inside. One of the properties is the `req` object, that is the same kind of object we expect to receive inside of an `express.js` application.
+
+In order to make sure that all the headers received from the initial request (including the **_Host_** and **_Cookie_** header) reach into other services, one should include `req.headers` in the request made to the **ingress-nginx**.
+
+```js
+LandingPage.getInitialProps = async ({ req }) => {
+  if (typeof window === 'undefined') {
+    const { data } = await axios.get(
+      'http://ingress-nginx-controller.kube-system.svc.cluster.local/api/users/currentuser',
+      {
+        headers: req.headers, // we forward all the headers received from the request; the Host & Cookie should be present there
+      }
+    );
+    return data;
+  } else {
+    // we are on the browser: the browser prepends the domain
+    const { data } = await axios.get('/api/users/currentuser');
+    return data;
+  }
+};
+```
