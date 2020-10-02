@@ -185,3 +185,52 @@ LandingPage.getInitialProps = async ({ req }) => {
   }
 };
 ```
+
+## getInitialProps considerations
+
+### Consideration #1
+
+The arguments that are provided to `getInitialProps` are different based on the type of component:
+
+- for a **Page Component**:
+  - `context === { req, res }`
+- for a **App Component**
+  - `context === { Component, ctx : { req, res }}`
+
+### Consideration #2
+
+When we tied `getInitialProps` to the `AppComponent`, the `getInitialProps` that we tied to an individual page, does not automatically get invoked anymore.
+
+It will be our responsibility to manually invoke the `Component.getInitialProps(...)`:
+
+- inside `AppComponent.getInitialProps(...)` invoke `Component.getInitialProps(...)` passing the context
+- get the result from `Component.getInitialProps(...)` and return it
+- use the returned result inside the AppComponent
+
+```js
+const AppComponent = ({ Component, pageProps, currentUser }) => {
+  return (
+    <div>
+      <h1>Header! {currentUser.email}</h1>
+      <Component {...pageProps} />{' '}
+    </div>
+  );
+};
+
+AppComponent.getInitialProps = async (appContext) => {
+  const client = buildClient(appContext.ctx);
+  const { data } = await client.get('/api/users/currentuser');
+
+  let pageProps = {};
+  if (appContext.Component.getInitialProps) {
+    pageProps = await appContext.Component.getInitialProps(appContext.ctx);
+  }
+
+  return {
+    pageProps,
+    currentUser: data.currentUser, // or simply use ...data to de-structure the object containing the currentUser
+  };
+};
+
+export default AppComponent;
+```
