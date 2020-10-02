@@ -130,7 +130,7 @@ The challenge are:
   - extract the `cookie` from the original request
   - include the `cookie` in the request to ingress-nginx
 
-The solution is described in my blog post: **Kubernetes: Cross Namespace Service Communication**, but still I did not make it to work!!!!
+The solution is described in my blog post: **Kubernetes: Cross Namespace Service Communication**.
 
 Note: it is very important to customize the requests we make based on the environment:
 
@@ -152,3 +152,12 @@ Where and when is `getInitialProps` executed:
 
 - when we make requests from the component we do not have to worry about the domain
 - when we make requests from the `getInitialProps` we need to take care of the domain based on the environment from which the function is executed
+
+In order to make the call during the SSR to the proper domain inside `getInitialProps` you should take the following steps:
+
+- `$ minikube addons enable ingress`
+- `$ minikube addons enable metallb`
+- `$ skaffold dev`
+- open a new another terminal:
+  - `$ kubectl expose deployment ingress-nginx-controller --target-port=80 --type=LoadBalancer -n kube-system`
+- the above cmd will create ingress-nginx-controller service of type LoadBalancer under namespace kube-system. We can access it via "http://SERVICENAME.NAMESPACE.svc.cluster.local" as stated in the course. In my case, http://ingress-nginx-controller.kube-system.svc.cluster.local/api/users/currentuser (ref https://stackoverflow.com/questions/62162209/ingress-nginx-errors-connection-refused)

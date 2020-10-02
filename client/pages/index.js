@@ -11,9 +11,9 @@ LandingPage.getInitialProps = async () => {
     // we are on the server
     // -------------------------------------------
     // this works, still it is a sync call to a service
-    const { data } = await axios.get(
-      'http://auth-srv:3000/api/users/currentuser'
-    );
+    // const { data } = await axios.get(
+    //   'http://auth-srv:3000/api/users/currentuser'
+    // );
     // -------------------------------------------
     // -------------------------------------------
     // this does not work, it uses an external name
@@ -27,15 +27,15 @@ LandingPage.getInitialProps = async () => {
     // );
     // -------------------------------------------
     // -------------------------------------------
-    // this does not work
-    // const { data } = await axios.get(
-    //   'http://ingress-nginx-controller-admission.kube-system.svc.cluster.local/api/users/currentuser',
-    //   {
-    //     headers: {
-    //       Host: 'tickets.dev', // we set the same host as the one defined in ingress-srv.yaml in order to pass the routing rules
-    //     },
-    //   }
-    // );
+    // this does work: more info on: https://stackoverflow.com/questions/62162209/ingress-nginx-errors-connection-refused
+    const { data } = await axios.get(
+      'http://ingress-nginx-controller.kube-system.svc.cluster.local/api/users/currentuser',
+      {
+        headers: {
+          Host: 'tickets.dev', // we set the same host as the one defined in ingress-srv.yaml in order to pass the routing rules
+        },
+      }
+    );
     // -------------------------------------------
     return data;
   } else {
