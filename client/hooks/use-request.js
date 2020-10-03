@@ -24,6 +24,7 @@ export default ({ url, method, body, onSuccess }) => {
         <div className="alert alert-danger">
           <h4>Ooops...</h4>
           <ul className="my-0">
+            {/* only the errors from the api are treated! make sure to tret all error types */}
             {err.response.data.errors.map((err) => (
               <li key={err.message}>{err.message}</li>
             ))}
