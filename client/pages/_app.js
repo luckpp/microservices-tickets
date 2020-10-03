@@ -1,6 +1,7 @@
 import 'bootstrap/dist/css/bootstrap.css';
 
 import buildClient from '../api/build-client';
+import Header from '../components/header';
 
 // explanation: whenever you try to navigate to some distinct page with Next JS,
 // Next JS is going to import your component from one of the pages/* files
@@ -15,8 +16,8 @@ import buildClient from '../api/build-client';
 const AppComponent = ({ Component, pageProps, currentUser }) => {
   return (
     <div>
-      <h1>Header! {currentUser.email}</h1>
-      <Component {...pageProps} />{' '}
+      <Header currentUser={currentUser} />
+      <Component {...pageProps} />
     </div>
   );
 };
