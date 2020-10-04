@@ -46,3 +46,44 @@ I have chosen the Option #2 and created a Public Organization:
 
 - publish the package to NPM:
   - `$ npm publish --access public`
+
+## Writing the library/package using TypeScript
+
+- We will write the `common` package using TypeScript. There might be situations when clients of the library/package might use a different version of TypeScript or they might use JavaScript.
+- **In order to avoid incompatibilities, the `common` library will be transpiled to JavaScript before being published to NPM.**
+- We will write TypeScript and publish JavaScript
+
+### Steps
+
+1. Set-up a TypeScript environment:
+
+- `$ npm i -g typescript`
+- or if you are on a linux environment: `$ sudo apt install node-typescript`
+
+2. Generate a TypeScript config file:
+
+- `$ tsc --init`
+
+3. Install `typesript` package and `del-cli` package as development dependencies:
+
+- `$ npm i typescript del-cli --save-dev`
+- we install the packages as development dependencies since we do not want to install them when adding the `common` package into other packages
+
+4. Set-up the build process to turn TS code into JS code:
+
+- update `package.json` and add a script to build the code using the TS compiler
+
+```json
+  "scripts": {
+    "clean": "del ./build/*",
+    "build": "npm run clean && tsc"
+  }
+```
+
+- inside `tsconfig.json` file provide the configuration to TypeScript in order to tell it where to find our source code and tell it where to place it after it has been turned to JS; you will have to add/uncomment the following options from `tsconfig.json`:
+  - `"declaration": true` (will ensure that a type definition file will be generated for cases when the `common` library/package will be used from a TS package)
+  - `"outDir": "./build"` (so after generating our JS code, the result will be placed in the build folder)
+
+5. Build everything:
+
+- `npm run build`
