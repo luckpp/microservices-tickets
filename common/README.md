@@ -30,7 +30,6 @@ I have chosen the Option #2 and created a Public Organization:
 ```json
 {
   "name": "@my-tickets/common"
-  // ...
 }
 ```
 
@@ -87,3 +86,52 @@ I have chosen the Option #2 and created a Public Organization:
 5. Build everything:
 
 - `npm run build`
+
+### Additional config
+
+Let us suppose that we installed the `common` package inside another service. Whenever we want to import some code out of `common` package, we will write something similar to:
+
+```ts
+import { Middleware } from '@my-tickets/common';
+```
+
+Notes related to the `common` `package.json` file:
+
+- the `main` setting will say what file we try to reach into when we write the import above.
+- we want to add a `types` setting, that will be used by TypeScript and will tell TypeScript what the main type definition file is
+- also we will add a `files` setting, that will tell NPM what set of files inside of our project will be 100% included in the final published version of our package
+
+So we will adjust the `package.json` accordingly:
+
+```json
+{
+  "main": "./build/index.js",
+  "types": "./build/index.d.ts",
+  "files": ["build/**/*"]
+}
+```
+
+## Publishing with correct version
+
+Before publishing a package to NPM it is important to update the version, and this can be done as follows:
+
+- manually by reaching into `package.json` and changing the `version` setting
+- automatically, by running the following command:
+  - `$ npm version patch`
+
+The complete list of command used to publish a package:
+
+- `$ npm version patch`
+- `$ npm run build`
+- `$ npm login` - if no previous login to NPM has been done
+- `$ npm publish`
+
+In order to make the publishing process faster, I will add a new script to the `package.json` file that will be used in development environment (this should not be done in real environment since we are modifying the version and publishing in one command):
+
+```json
+{
+  "scripts": {
+    "pub": "npm version patch && npm run build && npm publish"
+  }
+}
+```

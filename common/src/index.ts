@@ -5,9 +5,11 @@ interface Color {
 }
 
 const color: Color = {
-  red: 10,
+  red: 20,
   green: 10,
   blue: 10,
 };
 
 console.log(color);
+
+export default color;
