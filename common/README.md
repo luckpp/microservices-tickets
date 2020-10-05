@@ -3,7 +3,7 @@
 Contains common logic that will be shared across all microservices.
 This package will be published as npm public package inside `my-tickets` organization: https://www.npmjs.com/package/@my-tickets/common
 
-# Notes on publishing npm packages
+# Publishing as npm packages
 
 When we publish an npm package we have 3 options:
 
@@ -87,7 +87,7 @@ I have chosen the Option #2 and created a Public Organization:
 
 - `npm run build`
 
-### Additional config
+## Additional config
 
 Let us suppose that we installed the `common` package inside another service. Whenever we want to import some code out of `common` package, we will write something similar to:
 
@@ -135,3 +135,14 @@ In order to make the publishing process faster, I will add a new script to the `
   }
 }
 ```
+
+## Updating NPM packages and reflecting the change into projects using it
+
+Whenever we make changes inside inside of th `common` package, we have to have those changes reflected inside the projects that reference the package (like the `auth` project for example).
+
+Steps:
+
+- make a change inside `common` package
+- build and publish `common` package
+- change directory to the projects using the `common` package and do an update of the package:
+  - `$ npm update @my-tickets/common`
