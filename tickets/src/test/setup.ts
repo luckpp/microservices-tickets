@@ -15,7 +15,7 @@ declare global {
 let mongo: any;
 
 beforeAll(async () => {
-  process.env.JWT_KEY = 'asdf'; // probably this is not the best place to set up the Env Variable for testing environment
+  process.env.JWT_KEY = 'asdf';
 
   mongo = new MongoMemoryServer();
   const mongoUri = await mongo.getUri();
@@ -37,10 +37,6 @@ afterAll(async () => {
   await mongo.stop();
   await mongoose.connection.close();
 });
-
-// we will create a global helper function for the ease of use
-// one could also choose to create it in separate file, export it and import it whenever needed
-// since we are defining the function here it will be available in our app only in the test environment
 
 global.signin = async () => {
   const email = 'test@test.com';
