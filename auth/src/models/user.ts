@@ -21,7 +21,7 @@ interface UserDoc extends mongoose.Document {
 const userSchema = new mongoose.Schema(
   {
     email: {
-      type: String,
+      type: String, // this is the global string constructor in JavaScript
       required: true,
     },
     password: {
