@@ -70,3 +70,27 @@ Steps to define port-forwarding:
 - subscription: is what actually is going to listen to the channel and receives data
 
 NOTE: When using NATS, we can share only strings or raw data, so we can not share a plain JavaScript object.
+
+## Scaling the application
+
+At some point in time we might realize that our **listener** application is getting a load of traffic. We have to scale up the application and we have two options for scaling:
+
+- **vertically**: we give more hardware resources
+- **horizontally**: by creating more instances of the application
+
+In the context of NATS, we have to keep in mind that whenever we connect to NATS Streaming Server, the server maintains a list of different clients it is connected to. So, if we want to start multiple instances of an application that connects to NATS SS, we have to use different id-s.
+
+When scaling the application **horizontally** we have to make sure that an event is handled only by one instance. NATS Streaming Service makes this very simple by using **Queue Groups**.
+
+### Queue Groups
+
+- inside a `channel` we can create a `queue group`
+- we can have multiple `queue groups` associated with a `channel`
+- a `queue group` has a name
+
+- when scaling horizontally we should make sure that when an instance of an application subscribes to a `channel` than it should also join a `queue group` inside that `channel`:
+  - whenever an event comes to the channel, NATS Streaming is going to take a look at all the queue groups we have in that channel
+  - than NATS Streaming is going to (more or less randomly) select one of the members out of the every one of the queue groups and and send the event to the selected member
+  - **conclusion: only one member of the queue group receives the message**
+
+**A `queue group` is created to make sure that multiple instances of the same service are not all going to receive the same event.**
