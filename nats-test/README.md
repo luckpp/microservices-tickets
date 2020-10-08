@@ -62,3 +62,11 @@ Steps to define port-forwarding:
   - will be able to connect to NATS Streaming Server
 
 **NOTE: this port-forwarding command is not related to NATS, we can use it for any pod that we want to connect directly to if it is a temporary connection.**
+
+### Terminology around publishing events and listening for events
+
+- subject: the name of the channel we want to publish information to
+- channel: is something that we listen to
+- subscription: is what actually is going to listen to the channel and receives data
+
+NOTE: When using NATS, we can share only strings or raw data, so we can not share a plain JavaScript object.
