@@ -94,3 +94,43 @@ When scaling the application **horizontally** we have to make sure that an event
   - **conclusion: only one member of the queue group receives the message**
 
 **A `queue group` is created to make sure that multiple instances of the same service are not all going to receive the same event.**
+
+```js
+stan.on('connect', () => {
+  console.log('Listener connected to NATS');
+
+  const subscription = stan.subscribe(
+    'ticket:created',
+    'orders-service-queue-group'
+  );
+
+  subscription.on('message', (msg: Message) => {
+    const data = msg.getData();
+
+    if (typeof data === 'string') {
+      console.log(`Received event #${msg.getSequence()}, with data: ${data}`);
+    }
+  });
+});
+```
+
+### Acknowledge messages
+
+- the default behavior of the `node-nats-streaming` library is to acknowledge the NATS Streaming Server that the message has been processed by the listener as soon as it is received by the listener
+- we can change the behavior above by changing the default options and doing a manual acknowledge after the listener has received the message and has done some processing as result of that message
+  - normally, if we do not acknowledge the incoming event, after a certain amount of time (30s) the NATS Streaming Server will attempt to send the same message to the next member of the `queue group` or even retry to send the message to the same listener if that is not part of a `queue group` that failed to acknowledge the message
+
+```js
+const options = stan.subscriptionOptions().setManualAckMode(true);
+const subscription = stan.subscribe(
+  'ticket:created',
+  'orders-service-queue-group',
+  options
+);
+subscription.on('message', (msg: Message) => {
+  // processing
+  // ...
+  // acknowledge that the message has been processed
+  msg.ack();
+});
+```
