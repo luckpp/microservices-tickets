@@ -134,3 +134,77 @@ subscription.on('message', (msg: Message) => {
   msg.ack();
 });
 ```
+
+### Client health checks
+
+With NATS Streaming we can see the following problem: sometimes when the client restarts there might be a delay for that client to start process messages.
+
+Steps to reproduce the issue:
+
+- start 1 publisher and 2 listeners:
+  - `$ npm run publish`
+  - `$ npm run listen`
+- restart very fast the listeners:
+  - write `rs` in the terminal where each of the listeners started
+- restart very fast the publisher:
+  - write `rs` in the terminal where the publisher started
+- the publisher will send a message that will be processed with delay by one of the listeners
+
+The full explanation is available on: https://www.udemy.com/course/microservices-with-node-js-and-react/learn/lecture/19124552#notes.
+
+In order to investigate the problem we can use NATS Streaming monitoring endpoint exposed at port 8222 (see the `nats-depl.yaml`):
+
+- `$ kubectl port-forward {name_of_nats_pod} 8222:8222`
+- using the browser navigate to the monitoring service:
+  - http://localhost:8222/
+- to see information related to clients and channels access:
+  - http://localhost:8222/streaming
+- to see detailed information related to channels access:
+  - http://localhost:8222/streaming/channelsz?subs=1
+
+Notes:
+
+- whenever we restart a listener NATS Streaming will not immediately remove the subscription since it might think that is momentary interruption in connection (check the endpoint http://localhost:8222/streaming/channelsz?subs=1)
+- also when the listener goes offline it is still not removed immediately from the subscriptions
+
+#### How to help NATS streaming that when a listener goes offline it will not get back:
+
+##### 1. Use the configuration parameters
+
+We have done this configuration in the `nats-depl.yaml` using the following arguments:
+
+```json
+["-hbi", "5s", "-hbt", "5s", "-hbf", "2"]
+```
+
+Explanation for the config arguments above:
+
+- all of the arguments are referring to heat-beat:
+  - a small request sent by NATS Streaming to the connected clients on interval basis to make sure that each client is still up and running
+- `-hbi`: how often NATS Streaming Server is going to make a heart-beat request to each of its clients
+- `-hbt`: how log a client has to respond
+- `-hbf`: the number of times that each client can fail before NATS Streaming Server is going to assume that the connection is gone
+
+NOTE: **We can implement tighter heart-beat checks to fix the issues with the listener going offline.**
+
+##### 2. Graceful client shutdown
+
+This is a solution to tell NATS Streaming Server that the client disconnected and it will not go back, so NATS Streaming Server can remove it from the channel.
+
+```js
+stan.on('connect', () => {
+  stan.on('close', () => {
+    console.log('NATS connection closed!');
+    // after the client closes down we will exit the process
+    process.exit();
+  });
+  // ...
+});
+
+// listen for signals that are sent to this process any time the program is restarted or when you hit Ctrl+C
+// as a result stan.close() will reach to NATS Streaming Server and cause the client to successfully close down
+// it is not always guaranteed that those interrupt signals for the process will be received, so in those cases we have to relay
+// on the heart-beat mechanism
+process.on('SIGINT', () => stan.close());
+process.on('SIGTERM', () => stan.close());
+```

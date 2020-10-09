@@ -1,6 +1,7 @@
 import node from 'node-nats-streaming';
 
-// NOTE to restart the program while running just type 'rs' in the terminal
+// to restart the program while running just type 'rs' in the terminal
+// which is a command for ts-node-dev tools
 
 console.clear();
 
