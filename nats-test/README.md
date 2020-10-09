@@ -9,7 +9,7 @@
 - we are going to run `nats-streaming` docker image in Kubernetes
   - have a look at the Commandline Options on Docker Hub
 
-**_From now on I will refere to NATS Streaming Server simply as NATS._**
+**_From now on I will refer to NATS Streaming Server simply as NATS._**
 
 ## Notes on NATS Streaming
 
@@ -17,7 +17,7 @@
 
 - NATS Streaming requires us to subscribe to **channels/topics** since events are emitted to specific channels
 
-- NATS Straming stores all events in memory (default), flat files or in a MySQL/PostgresDB
+- NATS Streaming stores all events in memory (default), flat files or in a MySQL/PostgresDB
 
 ## NATS test project
 
@@ -208,3 +208,39 @@ stan.on('connect', () => {
 process.on('SIGINT', () => stan.close());
 process.on('SIGTERM', () => stan.close());
 ```
+
+# Async communication between microservices
+
+The async communication between microservices and microservices in general is really hard to manage on the data side.
+
+**VERY IMPORTANT VIDEO FOR REFERENCE: https://www.udemy.com/course/microservices-with-node-js-and-react/learn/lecture/19124562**
+
+While communicating between microservices there are several ways in which things can go wrong:
+
+- listeners can fail to process the event
+- one listener might run more quickly than another
+- NATS might think a client is still alive when it is not
+- we might receive the same event twice (when the listeners fails to send ACK in the allocated time for event processing)
+
+NOTE:
+
+- the issues above are typical to all event bus implementations
+- the issues above can happen in monolith architectures and also with microservices using sync style communication:
+  - still the issues become more visible/prominent in with async communication when an additional layer of latency is added (the event bus)
+
+## Possible (wrong) ways to solve the issues
+
+- have only one instance of the service that is doing the processing
+  - this is not feasible since we will have a bottleneck and we will be able to scale only vertically (not horizontally)
+- handle all possible errors that can occur
+  - this is very expensive \$\$\$ and most of the errors are very unlikely to appear
+- share state between services of last event processed
+  - this requires to process all the events in a sequential fashion which has a really big performance penalty
+  - also this means we can do only one update at a time
+- last event processed tracked by resource ID (this has elements from previous solution)
+  - we will put all the events related to a resource in its own sequence pool
+  - this is a great solution but there is an issue with the actual implementation in the context of NATS
+    - in order to have the correct resource IDs sequence we have to create separate channels for each resource; still with NATS Streaming Server allows you to have max 1000 channels by default (and also the solution is not applicable with other event bus implementations)
+- this solution is similar to the previous one but with an work-around generating sequence numbers for each resource
+  - the publisher will have to keep track of the previous event ID for each event; so it will have to have its own DB and it will have to get information related to IDs associated to an event from the NATS Streaming Server; so the publisher will know exactly the IDs sequence that applies to each resource
+  - the difficulty is to get ID information associated to an event from NATS Streaming Server
