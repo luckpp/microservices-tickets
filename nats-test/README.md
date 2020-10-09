@@ -258,6 +258,12 @@ Reference:
 
 - https://www.udemy.com/course/microservices-with-node-js-and-react/learn/lecture/19124578
 
+Claims:
+
+- most of the concurrency issues arise due to the fact that we are working with a poorly designed system and relying on NATS to somehow save us
+- we need do properly design the microservices
+- if we properly design our system, a better solution to the concurrency issues will present itself without worrying about any internal features of NATS
+
 Solution:
 
 - the idea is to have the publisher service compute a custom event id without relying on the NATS Streaming Service
