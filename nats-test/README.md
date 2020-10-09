@@ -230,6 +230,13 @@ NOTE:
 
 ## Possible (wrong) ways to solve the issues
 
+References:
+
+- https://www.udemy.com/course/microservices-with-node-js-and-react/learn/lecture/19124570
+- https://www.udemy.com/course/microservices-with-node-js-and-react/learn/lecture/19124576
+
+Possible (wrong) solutions:
+
 - have only one instance of the service that is doing the processing
   - this is not feasible since we will have a bottleneck and we will be able to scale only vertically (not horizontally)
 - handle all possible errors that can occur
@@ -244,3 +251,14 @@ NOTE:
 - this solution is similar to the previous one but with an work-around generating sequence numbers for each resource
   - the publisher will have to keep track of the previous event ID for each event; so it will have to have its own DB and it will have to get information related to IDs associated to an event from the NATS Streaming Server; so the publisher will know exactly the IDs sequence that applies to each resource
   - the difficulty is to get ID information associated to an event from NATS Streaming Server
+
+## Correct solution to solve the communication issues
+
+Reference:
+
+- https://www.udemy.com/course/microservices-with-node-js-and-react/learn/lecture/19124578
+
+Solution:
+
+- the idea is to have the publisher service compute a custom event id without relying on the NATS Streaming Service
+- the custom event id will than be taken into account by the listener service that is responsible to proceed with event processing only if the event is in the right order (the order is established by the custom event id that could actually be a number that is incremented)
