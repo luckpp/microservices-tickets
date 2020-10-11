@@ -268,3 +268,10 @@ Solution:
 
 - the idea is to have the publisher service compute a custom event id without relying on the NATS Streaming Service
 - the custom event id will than be taken into account by the listener service that is responsible to proceed with event processing only if the event is in the right order (the order is established by the custom event id that could actually be a number that is incremented)
+
+Solution details:
+
+- https://www.udemy.com/course/microservices-with-node-js-and-react/learn/lecture/19124586
+- **for each resource from our application (eg. an entry into a DB) we will add a `version` flag, and we will add this flag to the service that is the canonical service that manages the given resource**:
+  - example: the Tickets Service will manage the version flag for all the Tickets; the Tickets Service will be the only location where the version flag for a Ticket is ever to be directly updated
+  - all other services that depend on Tickets Service will not have a higher version of Ticket and they will not update the version
