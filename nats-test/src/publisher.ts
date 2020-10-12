@@ -1,4 +1,5 @@
 import node from 'node-nats-streaming';
+import { TicketCreatedPublisher } from './events/ticket-created-publisher';
 
 // to restart the program while running just type 'rs' in the terminal
 // which is a command for ts-node-dev tools
@@ -13,14 +14,10 @@ const stan = node.connect('ticketing', 'abc', {
 stan.on('connect', () => {
   console.log('Publisher connected to NATS');
 
-  const data = JSON.stringify({
+  const publisher = new TicketCreatedPublisher(stan);
+  publisher.publish({
     id: '1234',
     title: 'concert',
     price: 10,
-  });
-
-  stan.publish('ticket:created', data, () => {
-    // this callback is optional and is invoked after the data has been published
-    console.log('Event published');
   });
 });

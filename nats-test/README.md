@@ -331,6 +331,37 @@ So `setDeliverAllAvailable()`, `setDurableName(...)` and the `queue group name` 
 - `setDurableName(...)`: keeps track of the events that have gone to the `queue group name`
 - `queue group name`: makes sure we are not dumping the durable name when the listener service restarts or goes offline for a brief period of time, and also will make sure that all the emitted events will go exactly to one instance of the listener service even if we run multiple instances
 
+## Complete publisher implementation
+
+```js
+import node from 'node-nats-streaming';
+
+// to restart the program while running just type 'rs' in the terminal
+// which is a command for ts-node-dev tools
+
+console.clear();
+
+// `stan` is actually the client
+const stan = node.connect('ticketing', 'abc', {
+  url: 'http://localhost:4222',
+});
+
+stan.on('connect', () => {
+  console.log('Publisher connected to NATS');
+
+  const data = JSON.stringify({
+    id: '1234',
+    title: 'concert',
+    price: 10,
+  });
+
+  stan.publish('ticket:created', data, () => {
+    // this callback is optional and is invoked after the data has been published
+    console.log('Event published');
+  });
+});
+```
+
 ## Complete listener implementation
 
 ```js
