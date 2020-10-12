@@ -1,5 +1,6 @@
-import nats, { Message } from 'node-nats-streaming';
+import nats from 'node-nats-streaming';
 import { randomBytes } from 'crypto';
+import { TicketCreatedListener } from './events/ticket-createde-listener';
 
 // to restart the program while running just type 'rs' in the terminal
 // which is a command for ts-node-dev tools
@@ -19,27 +20,7 @@ stan.on('connect', () => {
     process.exit();
   });
 
-  const options = stan.subscriptionOptions()
-    .setManualAckMode(true)
-    .setDeliverAllAvailable()
-    .setDurableName('listener-service');
-
-  const subscription = stan.subscribe(
-    'ticket:created',
-    'listener-service-queue-group',
-    options
-  );
-
-  subscription.on('message', (msg: Message) => {
-    const data = msg.getData();
-
-    if (typeof data === 'string') {
-      console.log(`Received event #${msg.getSequence()}, with data: ${data}`);
-    }
-
-    // acknowledge that the message has been processed
-    msg.ack();
-  });
+  new TicketCreatedListener(stan).listen();
 });
 
 // listen for signals that are sent to this process any time the program is restarted or when you hit Ctrl+C
