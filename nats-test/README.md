@@ -275,3 +275,58 @@ Solution details:
 - **for each resource from our application (eg. an entry into a DB) we will add a `version` flag, and we will add this flag to the service that is the canonical service that manages the given resource**:
   - example: the Tickets Service will manage the version flag for all the Tickets; the Tickets Service will be the only location where the version flag for a Ticket is ever to be directly updated
   - all other services that depend on Tickets Service will not have a higher version of Ticket and they will not update the version
+
+## Durable Subscriptions
+
+Reference: https://www.udemy.com/course/microservices-with-node-js-and-react/learn/lecture/1912459
+
+During async communications we have to make sure that all events are delivered correctly and are not lost. There might be cases when the listener services go offline for a period of time or even start te activity long after the emitter services.
+
+In order to solve the issue above we have to properly set up the options for the NATS subscription on the listener side:
+
+### Deliver all available
+
+- make sure that all events that are available and unprocessed are sent to the listener services when those services come online
+  - this will make sure that all events emitted and unprocessed previous to the creation of a `durable subscription` will be delivered to the listener services that subscribed for the first time
+  - this option will only be used for the very first time we bring the `durable subscription` online
+
+```js
+const options = stan
+  .subscriptionOptions()
+  .setManualAckMode(true)
+  .setDeliverAllAvailable(); // <---
+```
+
+### Set the durable subscription
+
+- set-up a `durable subscription` that is going to be created when we give an identifier to the subscription:
+  - when we do that NATS Streaming Server, inside the channel that we are subscribing to, is going to create a record with all the durable subscriptions
+  - whenever we emit an even, NATS Streaming Server is going to record if the subscription has received and processed the event
+
+```js
+const options = stan
+  .subscriptionOptions()
+  .setManualAckMode(true)
+  .setDeliverAllAvailable()
+  .setDurableName('listener-service'); // <---
+```
+
+### Create a queue group
+
+- make sure to introduce the `queue group`
+  - without the `queue group` when the listener service restarts or goes offline, NATS Streaming Service will say that the client disconnected and it will never come back and it will wipe the history of the durable name
+  - if the `queue group` is available than the `durable name` will never be dumped since NATS Streaming Server will always persist it
+
+```js
+const subscription = stan.subscribe(
+  'ticket:created',
+  'listener-service-queue-group', // <---
+  options
+);
+```
+
+So `setDeliverAllAvailable()`, `setDurableName(...)` and the `queue group name` work together extremely well and gives us the behavior we want: do not lose events and deliver event to exactly one instance of the listener service:
+
+- `setDeliverAllAvailable()`: give all the event emitted in the past
+- `setDurableName(...)`: keeps track of the events that have gone to the `queue group name`
+- `queue group name`: makes sure we are not dumping the durable name when the listener service restarts or goes offline for a brief period of time, and also will make sure that all the emitted events will go exactly to one instance of the listener service even if we run multiple instances
