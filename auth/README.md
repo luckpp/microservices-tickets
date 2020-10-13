@@ -286,3 +286,20 @@ it('responds with details about the current user', async () => {
   expect(response.body.currentUser.email).toEqual('test@test.com');
 });
 ```
+
+## Mocking
+
+In order to mock imports with Jest do the following steps:
+
+- find the file that we want to 'fake'/mock
+- in the same directory, create a folder called `__mocks__`
+- in that folder, create a file with an identical name to the file we want to fake
+- write a fake implementation
+- tell `jest` to use that fake file in our test file:
+
+```js
+// inside the test file
+// this implementation is done inside tickets project src/routes/__test__/new.test.ts
+// ...
+jest.mock('../../nats-wrapper'); // relative path to the file to fake and for which jest will redirect imports to __mock__/nats-wrapper
+```
