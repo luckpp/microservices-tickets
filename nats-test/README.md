@@ -417,3 +417,11 @@ stan.on('connect', () => {
 process.on('SIGINT', () => stan.close());
 process.on('SIGTERM', () => stan.close());
 ```
+
+# Additional Info
+
+## Parameters
+
+When creating the NATS deployment inside `nats-depl.yaml` we have set up the following arguments:
+
+- `-cid`: which stands for container ID
