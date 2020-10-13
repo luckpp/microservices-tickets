@@ -1,6 +1,6 @@
 import nats from 'node-nats-streaming';
 import { randomBytes } from 'crypto';
-import { TicketCreatedListener } from './events/ticket-createde-listener';
+import { TicketCreatedListener } from './events/ticket-created-listener';
 
 // to restart the program while running just type 'rs' in the terminal
 // which is a command for ts-node-dev tools
