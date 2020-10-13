@@ -17,6 +17,14 @@ const start = async () => {
       'more-or-less-random-id', 
       'http://nats-srv:4222'
     );
+    // we are going to exit the process entirely anytime we loose the connection to NATS Streaming Server
+    // and this could happen also when NATS Streaming Server goes offline
+    natsWrapper.client.on('close', () => {
+      console.log('NATS connection closed!');
+      process.exit();
+    });
+    process.on('SIGINT', () => natsWrapper.client.close());
+    process.on('SIGTERM', () => natsWrapper.client.close());
     
     await mongoose.connect(process.env.MONGO_URI, {
       useNewUrlParser: true,
