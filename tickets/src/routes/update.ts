@@ -7,6 +7,8 @@ import {
   validateRequest,
 } from '@my-tickets/common';
 import { Ticket } from '../models/ticket';
+import { TicketUpdatedPublisher } from '../events/publishers/ticket-updated-publisher';
+import { natsWrapper } from '../nats-wrapper';
 
 const router = express.Router();
 
@@ -41,6 +43,12 @@ router.put(
     //   - any other possible updates like post/pre save hooks will be executed and persisted
     //     to the ticket document, so we should not refetch it from DB
     await ticket.save();
+    await new TicketUpdatedPublisher(natsWrapper.client).publish({
+      id: ticket.id,
+      title: ticket.title,
+      price: ticket.price,
+      userId: ticket.userId
+    });
 
     res.send(ticket);
   }
