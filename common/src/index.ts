@@ -1,4 +1,4 @@
-// re-export code from errors and middlewares
+// re-export code so it can be accessed by other modules
 
 export * from './errors/bad-request-error';
 export * from './errors/custom-error';
@@ -11,3 +11,9 @@ export * from './middlewares/current-user';
 export * from './middlewares/error-handler';
 export * from './middlewares/require-auth';
 export * from './middlewares/validate-request';
+
+export * from './events/base-listener';
+export * from './events/base-publisher';
+export * from './events/subjects';
+export * from './events/ticket-created-event';
+export * from './events/ticket-updated-event';

@@ -1,3 +1,4 @@
+import { title } from 'process';
 import { Subjects } from './subjects';
 
 export interface TicketCreatedEvent {

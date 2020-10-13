@@ -146,3 +146,15 @@ Steps:
 - build and publish `common` package
 - change directory to the projects using the `common` package and do an update of the package:
   - `$ npm update @my-tickets/common`
+
+# Events definitions
+
+The `common` module will contain definitions for all the event names (subjects) and events (messages) that will be propagated across microservices.
+
+There is one downside to this approach since all the clients of the common library have to be written in TS or JS in order to use those definitions.
+
+We can overcome this by using some alternatives with Cross Language Support:
+
+- JSON Schema
+- Protobuf
+- Apache Avro (more themed to Java)
