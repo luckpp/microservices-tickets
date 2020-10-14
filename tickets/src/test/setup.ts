@@ -30,6 +30,9 @@ beforeAll(async () => {
 });
 
 beforeEach(async () => {
+  // ensure that all mock function counters are reset so we do not pollute one test from another
+  jest.clearAllMocks();
+
   const collections = await mongoose.connection.db?.collections();
 
   for (let collection of collections) {

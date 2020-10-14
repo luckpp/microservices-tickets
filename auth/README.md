@@ -312,3 +312,46 @@ jest.mock('../../nats-wrapper'); // relative path to the file to fake and for wh
 // ...
 jest.mock('../nats-wrapper'); // relative path to the file to fake and for which jest will redirect imports to __mock__/nats-wrapper
 ```
+
+Below there is an implementation of a mock module:
+
+```js
+export const natsWrapper = {
+  client: {
+    publish: (subject: string, data: string, callback: () => void) => {
+      callback();
+    },
+  },
+};
+```
+
+Still, there are some cases in which we want to make tests around the mock in order to see if some functions like `publish` actually get called. In order to do so we can replace the above implementation with:
+
+```js
+export const natsWrapper = {
+  client: {
+    publish: jest
+      .fn()
+      .mockImplementation(
+        (subject: string, data: string, callback: () => void) => {
+          callback();
+        }
+      ),
+  },
+};
+```
+
+Also in the `src/test/setup.ts` we reset the counters and all data stored in the mock functions so we do not pollute one test from another.
+
+```js
+beforeEach(async () => {
+  jest.clearAllMocks();
+  // ...
+});
+```
+
+Inside of our test we can check to see if the `publish` function from above has been called:
+
+```js
+expect(natsWrapper.client.publish).toHaveBeenCalled();
+```
