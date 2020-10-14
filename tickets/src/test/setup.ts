@@ -12,6 +12,9 @@ declare global {
   }
 }
 
+// relative path to the file to fake and for which jest will redirect imports to __mock__/nats-wrapper
+jest.mock('../nats-wrapper');
+
 let mongo: any;
 
 beforeAll(async () => {

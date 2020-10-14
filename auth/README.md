@@ -303,3 +303,12 @@ In order to mock imports with Jest do the following steps:
 // ...
 jest.mock('../../nats-wrapper'); // relative path to the file to fake and for which jest will redirect imports to __mock__/nats-wrapper
 ```
+
+- alternatively to the last option we could tell `jest` to use that fake file in our test `setup.ts` file:
+
+```js
+// inside the test/setup.ts file
+// this implementation is done inside tickets project src/test/setup.ts
+// ...
+jest.mock('../nats-wrapper'); // relative path to the file to fake and for which jest will redirect imports to __mock__/nats-wrapper
+```

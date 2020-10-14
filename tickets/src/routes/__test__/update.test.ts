@@ -2,8 +2,6 @@ import request from 'supertest';
 import mongoose from 'mongoose';
 import { app } from '../../app';
 
-jest.mock('../../nats-wrapper');
-
 it('returns 404 if the provided id does not exist', async () => {
   const id = new mongoose.Types.ObjectId().toHexString();
   await request(app)
