@@ -26,9 +26,6 @@ const start = async () => {
       process.env.NATS_CLIENT_ID, 
       process.env.NATS_URL
     );
-    // we are going to exit the process entirely anytime we loose the connection to NATS Streaming Server
-    // and this could happen also when NATS Streaming Server goes offline
-    // the k8s pod will be restarted if the process inside exits
     natsWrapper.client.on('close', () => {
       console.log('NATS connection closed!');
       process.exit();
