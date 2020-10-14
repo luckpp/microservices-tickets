@@ -71,3 +71,28 @@ Regarding the proxy between writing to the events collection and actually publis
 1. It is relatively low (Change Steams are very efficient)
 
 2. It pays off in data integrity gains 💪
+
+# Environment variables for NATS connection
+
+We should define in the k8s `ticket-depl.yaml` config file the following environment variables:
+
+- `NATS_URL`
+  - can be hard-coded
+- `NATS_CLUSTER_ID`
+  - can be hard-coded
+- `NATS_CLIENT_ID`
+  - this can not be hard-coded since it needs to be unique for every client that we connect to NATS Streaming Server
+  - we can not hard-code it if we are running multiple copies of our service
+  - we could use the name of the Kubernetes pod that is unique since we do not have two pods that are running the tickets service with identical names
+
+```yaml
+env:
+  - name: NATS_URL
+    value: 'http://nats-srv:4222'
+  - name: NATS_CLUSTER_ID
+    value: ticketing
+  - name: NATS_CLIENT_ID
+    valueFrom:
+      fieldRef:
+        fieldPath: metadata.name
+```
