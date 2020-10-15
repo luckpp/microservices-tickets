@@ -1,4 +1,4 @@
-# Tickets
+# Tickets Service
 
 This project has similar structure to `auth` project. For more references refer to `auth` project README.md.
 
