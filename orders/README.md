@@ -24,3 +24,31 @@ When associating records together with Mongo DB there are two strategies that co
   - `tickets` collection
 - inside every order we optionally can have a reference to a ticket
 - in this case tickets can be queried very quickly
+
+The code below describes how can we use `mongoose` to interact with orders and tickets:
+
+```js
+// Associate an existing Order and Ticket
+const ticket = await Ticket.findOne({});
+const order = await Order.findOne({});
+order.ticket = ticket;
+await order.save();
+```
+
+```js
+// Associate an existing Ticket with a *new* Order
+const ticket = await Ticket.findOne({});
+const order = Order.build({
+  ticket: ticket,
+  userId: '...',
+  status: OrderStatus.Created,
+  expiresAt: tomorrow,
+});
+await order.save();
+```
+
+```js
+// Fetch an existing Order from DB with its associated Ticket
+const order = await Order.findById('...').populate('ticket');
+console.log(order.ticket.price);
+```
