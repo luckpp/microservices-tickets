@@ -29,9 +29,8 @@ it('returns an error if the ticked is already reserved', async () => {
     expiresAt: new Date(),
   });
   await order.save();
-  console.log('order', order);
 
-  const response = await request(app)
+  await request(app)
     .post('/api/orders')
     .set('Cookie', global.signin())
     .send({ ticketId: ticket.id })
