@@ -14,11 +14,9 @@ it('returns an error if the ticked does not exist', async () => {
 });
 
 it('returns an error if the ticked is already reserved', async () => {
-  const cookie = global.signin();
-
   const ticket = Ticket.build({
     title: 'concert',
-    price: 100,
+    price: 10,
   });
   await ticket.save();
 
@@ -37,4 +35,16 @@ it('returns an error if the ticked is already reserved', async () => {
     .expect(400);
 });
 
-it('reserves a ticket', async () => {});
+it('reserves a ticket', async () => {
+  const ticket = Ticket.build({
+    title: 'concert',
+    price: 10,
+  });
+  await ticket.save();
+
+  await request(app)
+    .post('/api/orders')
+    .set('Cookie', global.signin())
+    .send({ ticketId: ticket.id })
+    .expect(201);
+});
