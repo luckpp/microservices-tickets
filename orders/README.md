@@ -94,3 +94,11 @@ ticketSchema.methods.isReserved = async function () {
   return !!existingOrder;
 };
 ```
+
+## Testing
+
+In order to mark tests that should be implemented we can have the following code inside the test file:
+
+```js
+it.todo('emits an order created event');
+```
