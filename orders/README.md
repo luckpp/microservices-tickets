@@ -52,3 +52,10 @@ await order.save();
 const order = await Order.findById('...').populate('ticket');
 console.log(order.ticket.price);
 ```
+
+Have a look in the current project at the following models in order to understand the relation between `Order` and `Ticket` model:
+
+- `src/models/order.ts`
+- `src/models/ticket.ts`
+
+NOTE: **The models should be local to the service and should not be defined in the `common` library. The main reason is that in each service the model, even if it is replicated across services, might have different implementations.**
