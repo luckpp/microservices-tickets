@@ -59,3 +59,38 @@ Have a look in the current project at the following models in order to understan
 - `src/models/ticket.ts`
 
 NOTE: **The models should be local to the service and should not be defined in the `common` library. The main reason is that in each service the model, even if it is replicated across services, might have different implementations.**
+
+## Mongoose add instance methods to the documents
+
+There might be cases when we want to reuse some code related to a mongoose document. In those cases the best place to add that code is inside the document definition itself. We will use the Ticket model and we will follow the steps below
+
+- extend the `interface TicketDoc`
+
+```js
+interface TicketDoc extends mongoose.Document {
+  // ...
+  isReserved(): Promise<boolean>;
+}
+```
+
+- extend the `ticketSchema` and add a new 'instance' method:
+
+```js
+// It is critical to use `function` keyword instead of the arrow function
+// since the `function` gets its own context through `this`.
+// The `this` will point to the actual document we are operating on.
+ticketSchema.methods.isReserved = async function () {
+  // this === the ticket document that we just called 'isReserved(...)' on
+  const existingOrder = await Order.findOne({
+    ticket: this, // mongoose will make sure to pull out the ticketId and use it in the mongo query
+    status: {
+      $in: [
+        OrderStatus.AwaitingPayment,
+        OrderStatus.Created,
+        OrderStatus.Complete,
+      ],
+    },
+  });
+  return !!existingOrder;
+};
+```
