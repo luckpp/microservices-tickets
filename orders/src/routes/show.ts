@@ -21,8 +21,8 @@ router.get(
   ],
   validateRequest,
   async (req: Request, res: Response) => {
+    const { orderId } = req.params;
     const userId = req.currentUser!.id;
-    const orderId = req.params.orderId;
 
     const order = await Order.findById(orderId).populate('ticket');
 
