@@ -95,10 +95,28 @@ ticketSchema.methods.isReserved = async function () {
 };
 ```
 
-## Testing
+## Cool Info
+
+### Testing
 
 In order to mark tests that should be implemented we can have the following code inside the test file:
 
 ```js
 it.todo('emits an order created event');
+```
+
+### Date objects
+
+Inside our `Order` model we have defined the `expiresAt` property of type `Date`. Whenever an order gets saved to the DB, Mongo will take care to convert that date to a string.
+
+There are cases when we have properties of type `Date` on an object that will be serialized to `string`. When that `Date` property will turn itself into string, the default behavior will be to turn itself into a string that will represent the current timezone.
+
+NOTES:
+
+- **Whenever we share timestamps across services, we want to communicate them in some kind of timezone-agnostic way. So ideally we will provide an UTC timestamp.**
+- **UTC timestamp is going to work regardless of the timezone of the service that receives the timestamp.**
+
+```js
+// convert Date to UTC string
+const expiresAt: string = order.expiresAt.toISOString(); // order.expiresAt is of type Date
 ```
