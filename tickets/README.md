@@ -128,3 +128,9 @@ import { updateIfCurrentPlugin } from 'mongoose-update-if-current';
 ticketSchema.set('versionKey', 'version');
 ticketSchema.plugin(updateIfCurrentPlugin);
 ```
+
+## Versioning
+
+When using record versioning, the following question might arises: **When should we increment the `version` number of a record with an event?**
+
+Answer: **Increment the `version` number whenever the `primary service responsible for a record` emits an event to describe a `create/update/destroy` to a record.**
