@@ -31,6 +31,8 @@ const doRequest = async () => {
   );
 };
 
-for (let count = 0; count < 200; count++) {
-  doRequest();
-}
+(async () => {
+  for (let count = 0; count < 400; count++) {
+    doRequest();
+  }
+})();

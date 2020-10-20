@@ -133,4 +133,16 @@ ticketSchema.plugin(updateIfCurrentPlugin);
 
 When using record versioning, the following question might arises: **When should we increment the `version` number of a record with an event?**
 
-Answer: **Increment the `version` number whenever the `primary service responsible for a record` emits an event to describe a `create/update/destroy` to a record.**
+Answer: **Increment the `version` number whenever the `primary/canonical service responsible for a record` emits an event to describe a `create/update/destroy` to a record.**
+
+Whenever a listener gets an event telling that the primary/canonical service has update a record, than the listener service should search in its replicated collection the record that has the correct `id` and the `version` that is previous to the `version` inside the event:
+
+```js
+async onMessage(data: TicketUpdatedEvent['data'], msg: Message) {
+  const ticket = await Ticket.findOne({
+    _id: data.id,
+    version: data.version - 1,
+  });
+  // if the ticket is not null than the current msg/event is the one that should be processed in the correct order
+}
+```
