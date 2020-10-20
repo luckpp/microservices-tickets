@@ -96,3 +96,35 @@ env:
       fieldRef:
         fieldPath: metadata.name
 ```
+
+# Concurrent updates
+
+## Records update with Optimistic Concurrency Control (OCC)
+
+More info on OCC on https://en.wikipedia.org/wiki/Optimistic_concurrency_control
+
+We want to make sure that we always update the correct version of a record in DB and we keep track of the record version. We will implement the OCC.
+
+In order to correctly handle concurrent updates this is the flow that has to be followed:
+
+- fetch the record from DB
+- update the document
+- save the document
+- mongoose will update the version of the document automatically
+- mongoose will send the update request off to mongoDB
+- mongoDB will update the document with the indicated ID and Version
+
+To handle the versioning part we will use an npm module called `mongoose-update-if-current`.
+In order to implement the OCC using the module above and `mongoose` do the following inside the model file:
+
+```ts
+import { updateIfCurrentPlugin } from 'mongoose-update-if-current';
+// ...
+// after ticketSchema definition
+
+// Tell mongoose that we want to track the version of the documents using the field 'version' instead of the default '__v'.
+// So to rename the '__v' write the line below.
+// It is important to have the line below right above the line where we wire the 'updateIfCurrentPlugin' plugin.
+ticketSchema.set('versionKey', 'version');
+ticketSchema.plugin(updateIfCurrentPlugin);
+```

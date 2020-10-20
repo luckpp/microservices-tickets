@@ -350,7 +350,7 @@ stan.on('connect', () => {
   console.log('Publisher connected to NATS');
 
   const data = JSON.stringify({
-    id: '1234',
+    id: '123',
     title: 'concert',
     price: 10,
   });

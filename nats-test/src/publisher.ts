@@ -18,10 +18,10 @@ stan.on('connect', async () => {
 
   try {
     publisher.publish({
-      id: '1234',
+      id: '123',
       title: 'concert',
       price: 10,
-      userId: '1'
+      userId: '1',
     });
   } catch (err) {
     console.error(err);

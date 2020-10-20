@@ -355,3 +355,25 @@ Inside of our test we can check to see if the `publish` function from above has 
 ```js
 expect(natsWrapper.client.publish).toHaveBeenCalled();
 ```
+
+### Todo
+
+In order to mark tests that should be implemented we can have the following code inside the test file:
+
+```js
+it.todo('emits created event');
+```
+
+### Exit the test earlier
+
+In order to exit the test earlier we need to officially inform Jest:
+
+```js
+it('implements optimistic concurrency control', async (done) => {
+  if (/* condition*/) {
+    // we need to officially tell Jest that our test is done
+    return done();
+  }
+  // code that might execute
+});
+```

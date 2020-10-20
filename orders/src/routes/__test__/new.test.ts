@@ -18,12 +18,13 @@ it('returns an error if the ticked is already reserved', async () => {
   const ticket = Ticket.build({
     title: 'concert',
     price: 10,
+    id: new mongoose.Types.ObjectId().toHexString(),
   });
   await ticket.save();
 
   const order = Order.build({
     ticket,
-    userId: '1234',
+    userId: '123',
     status: OrderStatus.Created, // we rely only on this status to tell if the order is expired
     expiresAt: new Date(),
   });
@@ -40,6 +41,7 @@ it('reserves a ticket', async () => {
   const ticket = Ticket.build({
     title: 'concert',
     price: 10,
+    id: new mongoose.Types.ObjectId().toHexString(),
   });
   await ticket.save();
 
@@ -54,6 +56,7 @@ it('emits an order created event', async () => {
   const ticket = Ticket.build({
     title: 'concert',
     price: 10,
+    id: new mongoose.Types.ObjectId().toHexString(),
   });
   await ticket.save();
 
