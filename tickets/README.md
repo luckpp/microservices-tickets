@@ -146,3 +146,61 @@ async onMessage(data: TicketUpdatedEvent['data'], msg: Message) {
   // if the ticket is not null than the current msg/event is the one that should be processed in the correct order
 }
 ```
+
+### Alternative to `mongoose-update-if-current` module
+
+This chapter should be part of the **orders service** but has been added here in order to keep all information related to versioning in one place.
+
+We know that the **tickets service** is the canonical service that manages tickets and issues events whenever a ticket is created/updated. The **orders service** reacts to those events and replicates the tickets in its own DB.
+Furthermore the **orders service** uses the `mongoose-update-if-current` module in order to manage the version of the tickets that get replicated.
+
+Using `mongoose-update-if-current` inside of the **orders service** (which is a listener) is kind of cheating since we make assumptions related to how the **tickets service** (which is a publisher) handles the versioning of records. Moreover, the versioning can be done using timestamps or can be done with numbers that get incremented lets say with 100 for each successive version, etc.
+
+This chapter contains an example of how the **orders service** should manage versioning of tickets without relying on the `mongoose-update-if-current` module.
+
+Reference: https://www.udemy.com/course/microservices-with-node-js-and-react/learn/lecture/19565160
+
+First we should understand what `mongoose-update-if-current` module does. Below ar the two steps:
+
+1. updates the version number on records before they are saved
+2. customizes the find-and-update operation (save) to look for the correct version
+
+In order to manually replace **step #1** do the following:
+
+```js
+// inside of orders/src/events/listeners/ticket-updated-listener.ts
+
+// extract the received version and set it to the  ticket that will be saved
+const { title, price, version } = data;
+ticket.set({
+  title,
+  price,
+  version,
+});
+await ticket.save();
+```
+
+In order to manually replace **step #2** do the following:
+
+```js
+// inside orders/src/models/ticket.ts
+
+// ...
+ticketSchema.set('versionKey', 'version');
+
+// This is a middleware that will run before saving a record.
+// The `function` keyword has to be used in order to access te document that is saved through the `this` keyword.
+// If and arrow function would have been used the `this` keyword would have been overridden.
+ticketSchema.pre('save', function (done) {
+  // What we try to do here is to Extend the $where operation in order to take the version into account
+  // @ts-ignore (we added this since TS does not understand what $where is
+  this.$where = {
+    version: this.get('version') - 1,
+  };
+  // We tell mongoose that we are done with this operation
+  done();
+});
+// ...
+```
+
+Conclusion: the replacements above for steps #1 and #2 are everything that is required in order to be independent from the usage of `mongoose-update-if-current` module.
