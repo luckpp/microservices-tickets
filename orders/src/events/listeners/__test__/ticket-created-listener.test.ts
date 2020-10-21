@@ -1,16 +1,16 @@
 import mongoose from 'mongoose';
 import { Message } from 'node-nats-streaming';
-import { TicketUpdatedEvent } from '@my-tickets/common';
+import { TicketCreatedEvent } from '@my-tickets/common';
 import { natsWrapper } from '../../../nats-wrapper';
 import { TicketCreatedListener } from '../ticket-created-listener';
 import { Ticket } from '../../../models/ticket';
 
 const setup = async () => {
-  // create an instance of the listener
+  // Create an instance of the listener
   const listener = new TicketCreatedListener(natsWrapper.client);
 
-  // create a fake data event
-  const data: TicketUpdatedEvent['data'] = {
+  // Create a fake data event
+  const data: TicketCreatedEvent['data'] = {
     version: 0,
     id: new mongoose.Types.ObjectId().toHexString(),
     title: 'concert',
@@ -18,7 +18,7 @@ const setup = async () => {
     userId: new mongoose.Types.ObjectId().toHexString(),
   };
 
-  // create a fake message object
+  // Create a fake message object
   // @ts-ignore since we do not want to provide a fake implementation of all the missing members on our message
   const msg: Message = {
     ack: jest.fn(),
@@ -30,10 +30,10 @@ const setup = async () => {
 it('creates and saves a ticket', async () => {
   const { listener, data, msg } = await setup();
 
-  // call the onMessage function with the data + message object
+  // Call the onMessage function with the data + message object
   await listener.onMessage(data, msg);
 
-  // write assertions to make sure a ticket was created!
+  // Write assertions to make sure a ticket was created!
   const ticket = await Ticket.findById(data.id);
 
   expect(ticket).toBeDefined();
@@ -44,9 +44,9 @@ it('creates and saves a ticket', async () => {
 it('acks the message', async () => {
   const { listener, data, msg } = await setup();
 
-  // call the onMessage function with the data + message object
+  // Call the onMessage function with the data + message object
   await listener.onMessage(data, msg);
 
-  // write assertions to make sure ack function is called
+  // Write assertions to make sure ack function is called
   expect(msg.ack).toHaveBeenCalled();
 });
