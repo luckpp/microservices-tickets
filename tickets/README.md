@@ -204,3 +204,28 @@ ticketSchema.pre('save', function (done) {
 ```
 
 Conclusion: the replacements above for steps #1 and #2 are everything that is required in order to be independent from the usage of `mongoose-update-if-current` module.
+
+## Locking a ticket
+
+There might be cases when we want to **lock** a ticket in order to prevent it from being edited.
+The situation in which we would like to **lock** a ticket is for example when we have just created an order for that ticket in the **orders service** and form that point on we want to prevent somebody to change the ticket price or description.
+
+### Obvious solution (that is not enough)
+
+Just have a `boolean` flag on the ticket record.
+
+In this case when somebody wants to edit the ticket the following steps occur:
+
+- client asks: is somebody buying the ticket
+- ticket service responds: yes, but I don't know who or what the status of the order is
+
+### Next solution
+
+On the ticket itself we will record the `orderId`.
+
+In this case getting information about the status of the ticket will be straightforward.
+
+Conclusion:
+
+- we will use the presence of an `orderId` to decide whether or not a ticket is reserved and to know if we should prevent edits to it.
+- technically is not necessary to have the `orderId` stored on the ticket in order to get exact information related to an order; we could also expose an endpoint on the **orders service** that gets the order status based on the `ticketId`
