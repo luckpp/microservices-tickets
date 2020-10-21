@@ -8,7 +8,7 @@ interface Event {
 
 export abstract class Publisher<T extends Event> {
   abstract subject: T['subject'];
-  private readonly client: Stan;
+  protected readonly client: Stan;
 
   constructor(client: Stan) {
     this.client = client;
@@ -22,8 +22,7 @@ export abstract class Publisher<T extends Event> {
         }
         console.log('Event published to subject', this.subject);
         resolve();
-      })
+      });
     });
-    
   }
 }

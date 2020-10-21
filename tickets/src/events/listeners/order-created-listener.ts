@@ -1,6 +1,7 @@
 import { Listener, OrderCreatedEvent, Subjects } from '@my-tickets/common';
 import { Message } from 'node-nats-streaming';
 import { Ticket } from '../../models/ticket';
+import { TicketUpdatedPublisher } from '../publishers/ticket-updated-publisher';
 import { queueGroupName } from './queue-group-name';
 
 export class OrderCreatedListener extends Listener<OrderCreatedEvent> {
@@ -21,6 +22,16 @@ export class OrderCreatedListener extends Listener<OrderCreatedEvent> {
 
     // Save the ticket
     await ticket.save();
+    // NOTE: if the op below fails, on the next try we will increase the ticket version but a second time
+    //       without publishing an event for the first increase
+    await new TicketUpdatedPublisher(this.client).publish({
+      id: ticket.id,
+      version: ticket.version,
+      title: ticket.title,
+      price: ticket.price,
+      userId: ticket.userId,
+      orderId: ticket.orderId,
+    });
 
     // Ack the message
     msg.ack();

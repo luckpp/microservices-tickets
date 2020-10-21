@@ -229,3 +229,37 @@ Conclusion:
 
 - we will use the presence of an `orderId` to decide whether or not a ticket is reserved and to know if we should prevent edits to it.
 - technically is not necessary to have the `orderId` stored on the ticket in order to get exact information related to an order; we could also expose an endpoint on the **orders service** that gets the order status based on the `ticketId`
+
+### Updating the ticket as result of an event
+
+As mentioned in the previous chapter we will set `orderId` on a ticket as a result of receiving an **order created event** from the **orders service**.
+
+It is important to keep in mind that after we update the ticket, a **ticket updated event** has to be published since we have modified the ticket and its version.
+
+As a result, inside the `OrderCreatedListener` we have to instantiate a `TicketUpdatedPublisher` and usi it to publish the corresponding event. **In order to make testing easier (in tests we mock the NATS client) we have to take care that when we instantiate the `TicketUpdatedPublisher` we will provide the `NATS client` from inside the `OrderCreatedListener` instead of taking a direct dependency on `natsWrapper`.**
+
+```ts
+export class OrderCreatedListener extends Listener<OrderCreatedEvent> {
+  subject: Subjects.OrderCreated = Subjects.OrderCreated;
+  queueGroupName = queueGroupName;
+
+  async onMessage(data: OrderCreatedEvent['data'], msg: Message) {
+    // ...
+    ticket.set({ orderId: data.id });
+
+    await new TicketUpdatedPublisher(this.client).publish({
+      id: ticket.id,
+      version: ticket.version,
+      title: ticket.title,
+      price: ticket.price,
+      userId: ticket.userId,
+      orderId: ticket.orderId,
+    });
+    // ...
+  }
+}
+```
+
+Side NOTE:
+
+- when publishing an event we could send our entire model (in the case above the `ticket`) but the better option is to assign all the properties of the event manually to be in full control of the data that is being emitted
