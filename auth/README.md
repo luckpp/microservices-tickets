@@ -377,3 +377,29 @@ it('implements optimistic concurrency control', async (done) => {
   // code that might execute
 });
 ```
+
+### Testing for function call parameters
+
+When write test we use mock data, and mock function implementations. In order to assert that the test has work correctly we ant to check if the mock function has been called and the parameters to the function are the correct ones.
+
+Below is an example available inside `tickets service`:
+
+```ts
+it('publishes a ticket updated event', async () => {
+  const { listener, ticket, data, msg } = await setup();
+  await listener.onMessage(data, msg);
+
+  // natsWrapper is a mock
+  expect(natsWrapper.client.publish).toHaveBeenCalled();
+
+  // We will get an array with all the different calls that have been passed to the `publish` function
+  // Each element of the array is the set of parameters passed when calling the function
+
+  const mockFunction = natsWrapper.client.publish as jest.Mock;
+  const functionParameters = mockFunction.mock.calls[0];
+  const dataJsonString = functionParameters[1];
+  const dataJson = JSON.parse(dataJsonString);
+
+  expect(dataJson.orderId).toEqual(data.id);
+});
+```
