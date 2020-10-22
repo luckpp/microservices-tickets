@@ -22,8 +22,9 @@ export class OrderCreatedListener extends Listener<OrderCreatedEvent> {
 
     // Save the ticket
     await ticket.save();
-    // NOTE: if the op below fails, on the next try we will increase the ticket version but a second time
-    //       without publishing an event for the first increase
+    // NOTE: if the op below fails, on the next try we will increase the ticket version without publishing an event
+    //       and the next time we will publish an event with `version + 2` and the listeners will have the feeling
+    //       they have missed an event
     await new TicketUpdatedPublisher(this.client).publish({
       id: ticket.id,
       version: ticket.version,
