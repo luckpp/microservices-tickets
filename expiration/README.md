@@ -35,3 +35,29 @@ Expiration can be implemented in several ways:
   - is very commonly used for tasks similar with what has been described above
   - will store a list of jobs
   - after the time-out elapses it will notify Bull JS
+
+## Bull JS
+
+Explanation on how to use the Bull JS in a real world scenario:
+
+- suppose that to a Web Server comes a request to convert an `mp4` file to an `MKV` file (this requires a lot of processing power)
+- **Web Server** using Bull JS will schedule a **Job** on **Redis Server**
+  - a Job is a plain Java Script object that describes some amount of processing that needs to be done
+- **Redis Server** will store the **List of Jobs**
+- one or more **Worker Services** will poll the Redis Server and wait for some Job to appear
+  - as soon as a Job shows up a Worker Service will pull that Job, will do some processing on it, and send a message to Redis Server saying that the processing is complete
+
+NOTE:
+
+- Bull JS is used both on the Web Server and on the Worker Server
+- Bull JS is designed for little jobs, and not intended to handle huge amount of messages
+
+Terminology:
+
+- when we start to make use of Bull, we are going to create a **Queue** (the main abstraction inside Bull JS)
+- a **Queue** represents some series of messages that we want to queue up and eventually process over time
+- we will use Bull JS to create a **Queue** and specify what we want to do with messages that are flowing through it
+
+NOTE:
+
+- in our **expiration service** we do not have a separate worker server, and everything is contained inside the **expiration service**
