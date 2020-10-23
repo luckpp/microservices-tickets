@@ -38,6 +38,8 @@ Expiration can be implemented in several ways:
 
 ## Bull JS
 
+Reference: https://www.udemy.com/course/microservices-with-node-js-and-react/learn/lecture/19734556
+
 Explanation on how to use the Bull JS in a real world scenario:
 
 - suppose that to a Web Server comes a request to convert an `mp4` file to an `MKV` file (this requires a lot of processing power)
@@ -61,3 +63,14 @@ Terminology:
 NOTE:
 
 - in our **expiration service** we do not have a separate worker server, and everything is contained inside the **expiration service**
+
+### Implementation in current project
+
+The flow for expiring an order is:
+
+- the **expiration service** will receive an `order:created` event
+- the **expiration service** will use the `expirationQueue` to queue a new **Job**
+- the **Job** will be sent to **Redis Server** that will store the **Job** inside **List of Jobs** with type `order:expiration`
+- the **Job** will be stored inside **Redis Server** until a time will elapse
+- after time elapses, **Redis Server** will take tje **Job** and will send it to thr `expirationQueue`
+- inside the `expirationQueue` we will have code dedicated to process this **Job** and emit an event of `expiration:complete`
