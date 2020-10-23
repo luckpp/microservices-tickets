@@ -15,7 +15,7 @@ Expiration can be implemented in several ways:
 
 ### 2. Rely on NATS
 
-- when message is recieved verify the time; if eveything is ok emit an event and ack the message, if not than do not ack the message
+- when message is received verify the time; if everything is ok emit an event and ack the message, if not than do not ack the message
 - downside: rely on NATS redelivery mechanism
 
 ### 3. Use a scheduled message (set delivery time on the message)
@@ -25,12 +25,12 @@ Expiration can be implemented in several ways:
 
 ### 4. Use Bull JS and Redis Server
 
-- Bull JS
+- **Bull JS**
   - is a JS library that allows us to setup long lived timers or essentially give ourselves notifications
   - is a general purpose framework for allowing us to store some amount of data, do some processing on it and have some scheduled aspect to it as well
   - essentially we tell Bull JS to remind us to do some amount of work in the future
   - Bull JS is going to store te reminders inside of a Redis instance
-- Redis:
+- **Redis**:
   - is an in-memory database
   - is very commonly used for tasks similar with what has been described above
   - will store a list of jobs

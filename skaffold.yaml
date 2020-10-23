@@ -8,6 +8,14 @@ build:
   local:
     push: false
   artifacts:
+    - image: luckpp/client
+      context: client
+      docker:
+        dockerfile: Dockerfile
+      sync:
+        manual:
+          - src: "**/*.js"
+            dest: .
     - image: luckpp/auth
       context: auth
       docker:
@@ -32,11 +40,12 @@ build:
         manual:
           - src: "src/**/*.ts"
             dest: .
-    - image: luckpp/client
-      context: client
+    - image: luckpp/expiration
+      context: expiration
       docker:
         dockerfile: Dockerfile
       sync:
         manual:
-          - src: "**/*.js"
+          - src: "src/**/*.ts"
             dest: .
+    
