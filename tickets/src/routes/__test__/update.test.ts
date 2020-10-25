@@ -5,7 +5,7 @@ import { natsWrapper } from '../../nats-wrapper';
 import { Ticket } from '../../models/ticket';
 
 it('returns 404 if the provided id does not exist', async () => {
-  const id = new mongoose.Types.ObjectId().toHexString();
+  const id = mongoose.Types.ObjectId().toHexString();
   await request(app)
     .put(`/api/tickets/${id}`)
     .set('Cookie', global.signin())
@@ -17,7 +17,7 @@ it('returns 404 if the provided id does not exist', async () => {
 });
 
 it('returns 401 if the use is not authenticated', async () => {
-  const id = new mongoose.Types.ObjectId().toHexString();
+  const id = mongoose.Types.ObjectId().toHexString();
   await request(app)
     .put(`/api/tickets/${id}`)
     .send({
@@ -148,7 +148,7 @@ it('rejects updates if the ticket is reserved', async () => {
     .expect(201);
 
   const ticket = await Ticket.findById(createdTicket.id);
-  ticket!.set({ orderId: new mongoose.Types.ObjectId().toHexString() });
+  ticket!.set({ orderId: mongoose.Types.ObjectId().toHexString() });
   await ticket!.save();
 
   await request(app)

@@ -11,7 +11,7 @@ const setup = async () => {
 
   // Create and save a ticket
   const ticket = Ticket.build({
-    id: new mongoose.Types.ObjectId().toHexString(),
+    id: mongoose.Types.ObjectId().toHexString(),
     title: 'concert',
     price: 10,
   });
@@ -23,7 +23,7 @@ const setup = async () => {
     version: ticket.version + 1,
     title: 'new concert',
     price: 20,
-    userId: new mongoose.Types.ObjectId().toHexString(),
+    userId: mongoose.Types.ObjectId().toHexString(),
   };
 
   // Create a fake msg object

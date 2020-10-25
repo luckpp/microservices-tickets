@@ -8,11 +8,11 @@ import { OrderCancelledListener } from '../order-cancelled-listener';
 const setup = async () => {
   const listener = new OrderCancelledListener(natsWrapper.client);
 
-  const orderId = new mongoose.Types.ObjectId().toHexString();
+  const orderId = mongoose.Types.ObjectId().toHexString();
   const ticket = Ticket.build({
     title: 'concert',
     price: 10,
-    userId: new mongoose.Types.ObjectId().toHexString(),
+    userId: mongoose.Types.ObjectId().toHexString(),
   });
   // Normally, when we create a ticket with Ticket.build(...) we don't assign it an order
   // and that is why we set the orderId afterwards

@@ -13,16 +13,16 @@ const setup = async () => {
   const ticket = Ticket.build({
     title: 'concert',
     price: 10,
-    userId: new mongoose.Types.ObjectId().toHexString(),
+    userId: mongoose.Types.ObjectId().toHexString(),
   });
   await ticket.save();
 
   // Create the fake data event
   const data: OrderCreatedEvent['data'] = {
-    id: new mongoose.Types.ObjectId().toHexString(),
+    id: mongoose.Types.ObjectId().toHexString(),
     version: 0,
     status: OrderStatus.Created,
-    userId: new mongoose.Types.ObjectId().toHexString(),
+    userId: mongoose.Types.ObjectId().toHexString(),
     expiresAt: new Date().toISOString(),
     ticket: {
       id: ticket.id,
