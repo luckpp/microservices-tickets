@@ -26,6 +26,10 @@ export class ExpirationCompleteListener extends Listener<
       throw new Error('Order not found');
     }
 
+    if (order.status === OrderStatus.Complete) {
+      return msg.ack();
+    }
+
     // NOTE: it does not make sense to set the `ticket` of an order to null since in the future we will not
     //       know when the ticket has been reserved. Also we have code in ticket.ts that tells whether or
     //       not a ticket is reserved and this is done by looking at the orders collection.

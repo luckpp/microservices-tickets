@@ -15,8 +15,9 @@ import { natsWrapper } from '../nats-wrapper';
 
 const router = express.Router();
 
-// TODO: should be defined as environment variable or should even be stored in DB and allow admins to modify it
-const EXPIRATION_WINDOW_SECONDS = 15 * 60;
+// TODO: should be defined as environment variable or should even be stored in DB and allow
+//       admins to modify it
+const EXPIRATION_WINDOW_SECONDS = 1 * 60;
 
 router.post(
   '/api/orders',
