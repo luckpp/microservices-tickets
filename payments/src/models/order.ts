@@ -1,21 +1,21 @@
+import { OrderStatus } from '@my-tickets/common';
 import mongoose from 'mongoose';
 import { updateIfCurrentPlugin } from 'mongoose-update-if-current';
-import { OrderStatus } from '@my-tickets/common';
-import { TicketDoc } from './ticket';
 
 interface OrderAttrs {
+  id: string;
+  version: number;
   userId: string;
+  price: number;
   status: OrderStatus;
-  expiresAt: Date;
-  ticket: TicketDoc;
 }
 
 interface OrderDoc extends mongoose.Document {
-  userId: string;
-  status: OrderStatus;
-  expiresAt: Date;
-  ticket: TicketDoc;
+  // NOTE: `id` is not listed here since is already included in `mongoose.Document`
   version: number;
+  userId: string;
+  price: number;
+  status: OrderStatus;
 }
 
 interface OrderModel extends mongoose.Model<OrderDoc> {
@@ -24,8 +24,13 @@ interface OrderModel extends mongoose.Model<OrderDoc> {
 
 const orderSchema = new mongoose.Schema(
   {
+    // NOTE: `version` is not included since it will be maintained automatically by `mongoose-update-if-current` module
     userId: {
       type: String,
+      required: true,
+    },
+    price: {
+      type: Number,
       required: true,
     },
     status: {
@@ -33,13 +38,6 @@ const orderSchema = new mongoose.Schema(
       required: true,
       enum: Object.values(OrderStatus),
       default: OrderStatus.Created,
-    },
-    expiresAt: {
-      type: mongoose.Schema.Types.Date,
-    },
-    ticket: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: 'Ticket',
     },
   },
   {
@@ -57,9 +55,13 @@ orderSchema.set('versionKey', 'version');
 orderSchema.plugin(updateIfCurrentPlugin);
 
 orderSchema.statics.build = (attrs: OrderAttrs) => {
-  return new Order(attrs);
+  const { id, ...rest } = attrs;
+  return new Order({
+    _id: id,
+    ...rest,
+  });
 };
 
-const Order = mongoose.model<OrderDoc, OrderModel>('Order', orderSchema);
+const Order = mongoose.model<OrderDoc, OrderModel>('order', orderSchema);
 
-export { Order, OrderStatus };
+export { Order };

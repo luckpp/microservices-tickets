@@ -123,7 +123,7 @@ import { updateIfCurrentPlugin } from 'mongoose-update-if-current';
 // after ticketSchema definition
 
 // Tell mongoose that we want to track the version of the documents using the field 'version' instead of the default '__v'.
-// So to rename the '__v' write the line below.
+// So to rename the '__v', write the line below.
 // It is important to have the line below right above the line where we wire the 'updateIfCurrentPlugin' plugin.
 ticketSchema.set('versionKey', 'version');
 ticketSchema.plugin(updateIfCurrentPlugin);

@@ -45,6 +45,7 @@ const ticketSchema = new mongoose.Schema(
   }
 );
 
+// This is going to overwrite `mongoose` and tell it not to use the `__v` flag and use instead `version`
 ticketSchema.set('versionKey', 'version');
 ticketSchema.plugin(updateIfCurrentPlugin);
 
