@@ -59,3 +59,13 @@ await stripe.charges.create({
   description: 'Payment for ticket', // this is optional
 });
 ```
+
+## Testing with Stripe
+
+NOTE: **After signing-up to Stripe, the Stripe account will be operated in test mode. While the account is in test mode you do not work with real money, so no money is moved around. When we decide to go public with the application we will toggle of the `test mode`.**
+
+**While the account is in test mode there is a very special `token` that we can provide, that will always succeed with the Stripe API.**
+
+**The test Stripe token that will always succeed for Stripe accounts that are in test mode, is: `'tok_visa'`.**
+
+In order to verify that we have successfully charged some amount of money we can go to the **Stripe Dashboard** and see if the charge is listed in the **Payments** section.
