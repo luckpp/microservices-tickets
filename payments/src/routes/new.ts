@@ -44,7 +44,7 @@ router.post(
       description: 'Payment for ticket', // this is optional
     });
 
-    res.send({ success: true });
+    res.status(201).send({ success: true });
   }
 );
 

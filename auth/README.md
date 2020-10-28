@@ -403,3 +403,7 @@ it('publishes a ticket updated event', async () => {
   expect(dataJson.orderId).toEqual(data.id);
 });
 ```
+
+### Mock async function
+
+Inside project `payments` we want to mock the `stripe` API. In order to do so we have to provide a mock implementation for an async function. In order to do so we will use the `jest.fn().mockResolvedValue({})` function.
