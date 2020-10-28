@@ -69,3 +69,88 @@ NOTE: **After signing-up to Stripe, the Stripe account will be operated in test 
 **The test Stripe token that will always succeed for Stripe accounts that are in test mode, is: `'tok_visa'`.**
 
 In order to verify that we have successfully charged some amount of money we can go to the **Stripe Dashboard** and see if the charge is listed in the **Payments** section.
+
+### Automate testing Stripe charges
+
+There are two possible approaches to test if requests to create charges are handled correctly. You can use only one approach.
+
+#### 1. Mock the Stripe API
+
+Inside `src/__mocks__` folder add the mock implementation of the `Stripe API`:
+
+```ts
+export const stripe = {
+  charges: {
+    create: jest.fn().mockResolvedValue({}),
+  },
+};
+```
+
+Inside the test file make sure you import `stripe`, mock its content and use the mock to test:
+
+```ts
+import { stripe } from '../../stripe';
+
+jest.mock('../../stripe');
+
+it('returns a 201 with valid inputs', async () => {
+  // ...
+
+  const mockFunction = stripe.charges.create as jest.Mock;
+  const chargeOptions = mockFunction.mock.calls[0][0];
+  expect(chargeOptions.source).toEqual('tok_visa');
+  expect(chargeOptions.amount).toEqual(order.price * 100);
+  expect(chargeOptions.currency).toEqual('ron');
+});
+```
+
+#### 2. Use directly the Stripe API
+
+In this case you should remove all the mock implementations of `stripe` and make sure that the `src/test/setup.ts` defines on the top level the **_environment variable_** that holds the `Stripe API key`.
+
+```ts
+// make sure to change the name of the file src/__mocks__/stripe.ts to something else like for eg. src/__mocks__/stripe.ts.old
+```
+
+```ts
+// inside src/test/setup.ts`
+process.env.STRIPE_KEY = '... key from Stripe online dashboard ...';
+```
+
+```ts
+// inside src/routes/new/__test__/new.test.ts`
+// remove jest.mock('../../stripe');
+
+// add the test below
+it('returns a 201 with valid inputs - Real Stripe API', async () => {
+  const userId = mongoose.Types.ObjectId().toHexString();
+  const price = Math.floor(Math.random() * 100000);
+
+  const order = Order.build({
+    id: mongoose.Types.ObjectId().toHexString(),
+    version: 1,
+    price: price,
+    status: OrderStatus.Created,
+    userId,
+  });
+  await order.save();
+
+  await request(app)
+    .post('/api/payments')
+    .set('Cookie', global.signin(userId))
+    .send({
+      token: 'tok_visa',
+      orderId: order.id,
+    })
+    .expect(201);
+
+  const charges = await stripe.charges.list({
+    limit: 10,
+  });
+
+  const currentCharge = charges.data.find((c) => c.amount === price * 100);
+
+  expect(currentCharge).toBeDefined();
+  expect(currentCharge!.currency).toEqual('ron');
+});
+```

@@ -15,6 +15,9 @@ jest.mock('../nats-wrapper');
 
 let mongo: any;
 
+// Uncomment the code below to run tests with Real Stripe API
+// process.env.STRIPE_KEY = '... key from Stripe online dashboard ...';
+
 beforeAll(async () => {
   process.env.JWT_KEY = 'asdf';
   // process.env.NODE_TLS_REJECT_UNAUTHORIZED = '0';
