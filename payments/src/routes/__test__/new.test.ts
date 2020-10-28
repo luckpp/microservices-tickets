@@ -3,6 +3,7 @@ import mongoose from 'mongoose';
 import request from 'supertest';
 import { app } from '../../app';
 import { Order } from '../../models/order';
+import { Payment } from '../../models/payment';
 import { stripe } from '../../stripe';
 
 // Uncomment the code below to run tests with Mock Stripe API, and comment the test with Real Stripe API
@@ -89,6 +90,11 @@ it('returns a 201 with valid inputs - Mock Stripe API', async () => {
   expect(chargeOptions.source).toEqual('tok_visa');
   expect(chargeOptions.amount).toEqual(order.price * 100);
   expect(chargeOptions.currency).toEqual('ron');
+
+  const payment = await Payment.findOne({
+    orderId: order.id,
+  });
+  expect(payment).not.toBeNull();
 });
 
 // Uncomment the code below to run tests with Real Stripe API, and comment the test with Mock Stripe API
@@ -119,8 +125,14 @@ it('returns a 201 with valid inputs - Mock Stripe API', async () => {
 //     limit: 10,
 //   });
 
-//   const currentCharge = charges.data.find((c) => c.amount === price * 100);
+//   const stripeCharge = charges.data.find((c) => c.amount === price * 100);
 
-//   expect(currentCharge).toBeDefined();
-//   expect(currentCharge!.currency).toEqual('ron');
+//   expect(stripeCharge).toBeDefined();
+//   expect(stripeCharge!.currency).toEqual('ron');
+
+//   const payment = await Payment.findOne({
+//     orderId: order.id,
+//     stripeId: stripeCharge!.id,
+//   });
+//   expect(payment).not.toBeNull();
 // });

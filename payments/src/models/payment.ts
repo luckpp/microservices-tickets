@@ -1,5 +1,4 @@
 import mongoose from 'mongoose';
-import { OrderDoc } from './order';
 
 interface PaymentAttrs {
   orderId: string;
@@ -17,11 +16,11 @@ interface PaymentModel extends mongoose.Model<PaymentDoc> {
 
 const paymentSchema = new mongoose.Schema(
   {
-    order: {
+    orderId: {
       type: String,
       required: true,
     },
-    chargeId: {
+    stripeId: {
       type: String,
       required: true,
     },
