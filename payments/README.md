@@ -154,3 +154,10 @@ it('returns a 201 with valid inputs - Real Stripe API', async () => {
   expect(currentCharge!.currency).toEqual('ron');
 });
 ```
+
+## Payment Model
+
+NOTE:
+
+- On the Payment model we do not include a `version` field since once a payment record has been created we do not modify it anymore.
+- **It is a good practice to have a `version` field on all of our records since we might need it in the future to replicate data.**
