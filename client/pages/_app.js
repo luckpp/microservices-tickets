@@ -17,7 +17,7 @@ const AppComponent = ({ Component, pageProps, currentUser }) => {
   return (
     <div>
       <Header currentUser={currentUser} />
-      <Component {...pageProps} />
+      <Component currentUser={currentUser} {...pageProps} />
     </div>
   );
 };
@@ -28,7 +28,15 @@ AppComponent.getInitialProps = async (appContext) => {
 
   let pageProps = {};
   if (appContext.Component.getInitialProps) {
-    pageProps = await appContext.Component.getInitialProps(appContext.ctx);
+    // We pass `client` as a second argument to each component in order to avoid recreating the `client`
+    // before each request we want to make.
+    // We pass the `user` as a third argument since whenever we will further want to fetch some data related
+    // to the user, we want to understand who the user is.
+    pageProps = await appContext.Component.getInitialProps(
+      appContext.ctx,
+      client,
+      data.currentUser
+    );
   }
 
   return {
