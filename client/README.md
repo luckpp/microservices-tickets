@@ -234,3 +234,13 @@ AppComponent.getInitialProps = async (appContext) => {
 
 export default AppComponent;
 ```
+
+# Stripe Payments
+
+In order to handle payments with stripe we will use a library called `react-stripe-checkout` which is available on https://www.npmjs.com/package/react-stripe-checkout
+
+- `npm install react-stripe-checkout`
+
+## Testing with Stripe
+
+In order to use test data (eg. credit card numbers) use the information provided on https://stripe.com/docs/testing.
