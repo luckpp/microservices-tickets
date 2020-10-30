@@ -17,9 +17,7 @@ const TicketShow = ({ ticket }) => {
       <h1>{ticket.title}</h1>
       <h4>Price: {ticket.price}</h4>
       {errors}
-      {/* if we would have put `doRequest()` instead of `doRequest` than the method would have been called when
-          the component would have been rendered */}
-      <button onClick={doRequest} className="btn btn-primary">
+      <button onClick={() => doRequest()} className="btn btn-primary">
         Purchase
       </button>
     </div>

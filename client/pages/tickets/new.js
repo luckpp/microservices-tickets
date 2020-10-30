@@ -45,6 +45,8 @@ const NewTicket = () => {
         </div>
         <div className="form-group">
           <label>Price</label>
+          {/* if we would have put `onBlur()` instead of `onBlur` than the method would have been called when
+          the component would have been rendered */}
           <input
             value={price}
             onBlur={onBlur}

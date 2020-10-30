@@ -1,8 +1,17 @@
 import { useEffect, useState } from 'react';
 import StripeCheckout from 'react-stripe-checkout';
+import useRequest from '../../hooks/use-request';
 
 const OrderShow = ({ order, currentUser }) => {
   const [timeLeft, setTimeLeft] = useState(0);
+  const { doRequest, errors } = useRequest({
+    url: '/api/payments',
+    method: 'post',
+    body: {
+      orderId: order.id,
+    },
+    onSuccess: (payment) => console.log('Payment created:', payment),
+  });
 
   // When the component first renders we want to call the wrapped function only one time. This is the reason
   // for using the `useEffect` hook
@@ -38,12 +47,13 @@ const OrderShow = ({ order, currentUser }) => {
       {/* For the current implementation we store the Stripe Key inside the react app. It would be recommended to
           store it as an environment variable or even as a Kubernetes secret. */}
       <StripeCheckout
-        token={(token) => console.log(token)}
+        token={({ id }) => doRequest({ token: id })}
         stripeKey="pk_test_51HgnuUEL5IIc4jWwEvItLqueIxjc9MDuAvi3Qv1WbGECVpGGhdlmOqN3RAMHQehFbaFuNi0C8F4SJ3NiX7h6RUOa00u4UaLLuX"
         amount={order.ticket.price * 100}
         email={currentUser.email}
         currency="RON"
       />
+      {errors}
     </div>
   );
 };
