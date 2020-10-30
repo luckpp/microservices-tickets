@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import StripeCheckout from 'react-stripe-checkout';
+import Router from 'next/router';
 import useRequest from '../../hooks/use-request';
 
 const OrderShow = ({ order, currentUser }) => {
@@ -10,7 +11,7 @@ const OrderShow = ({ order, currentUser }) => {
     body: {
       orderId: order.id,
     },
-    onSuccess: (payment) => console.log('Payment created:', payment),
+    onSuccess: (payment) => Router.push('/orders'),
   });
 
   // When the component first renders we want to call the wrapped function only one time. This is the reason
@@ -43,7 +44,9 @@ const OrderShow = ({ order, currentUser }) => {
 
   return (
     <div>
-      Time left to pay: {timeLeft} seconds
+      <h1>Payment</h1>
+      <h2>Ticket title: {order.ticket.title}</h2>
+      <div>Time left to pay: {timeLeft} seconds</div>
       {/* For the current implementation we store the Stripe Key inside the react app. It would be recommended to
           store it as an environment variable or even as a Kubernetes secret. */}
       <StripeCheckout
