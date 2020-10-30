@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import Router from 'next/router';
 import useRequest from '../../hooks/use-request';
 
 const NewTicket = () => {
@@ -13,6 +14,7 @@ const NewTicket = () => {
     },
     onSuccess: (ticket) => {
       console.log(ticket);
+      Router.push('/');
     },
   });
 
