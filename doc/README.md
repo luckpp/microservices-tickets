@@ -36,3 +36,42 @@ How to create a Git repository from our project folder:
 
 - run `git push origin master`
 - (\*) make sure you have your git client set up to work with Github appropriately (eg. you have matching SSH keys -> Github offers help doc in this direction)
+
+# Github Actions
+
+Any time an action occurs in a Github repository an Event is triggered inside Github and based on that we can **run a Github action**. Examples of events:
+
+- Code pushed
+- Pull request created
+- Pull request closed
+- Repository is forked
+- ...
+
+**A Github action is a actually a script in which we can put code to:**
+
+- run commands
+- run tests
+- deploy the app
+- ...
+
+Reference:
+
+- https://docs.github.com/en/free-pro-team@latest/actions
+- https://www.udemy.com/course/microservices-with-node-js-and-react/learn/lecture/19989344
+
+## Example of github action
+
+A Github action can be defined from the Github repository page.
+
+```yaml
+name: test # name of the Github action
+
+on: pull_request # the event that will trigger the action
+
+jobs: # defines the things we want to do whenever a pull_request is created, reopened or updated
+  build:
+    runs-on: ubuntu-latest # we start a container
+    steps:
+      - uses: actions/checkout@v2 # we will take all the code out of our project
+      - run: cd auth && npm install && npm run test:ci # the series of commands that will run inside of our project
+```
