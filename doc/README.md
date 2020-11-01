@@ -78,9 +78,22 @@ jobs: # defines the things we want to do whenever a pull_request is created, reo
 
 NOTE: In `auth` project we have added a `test:ci` npm script in order to make sure that the tests are not run in watch mode and are run only once.
 
-### How to commit the code:
+## How to commit the code
 
 - `$ git status` allows to see the files that have been changed
 - `$ git add .` to add those files to the next commit
 - `$ git commit -m "added CI test script"` to commit
+- `$ git pull origin master` to pull any existing changes (optional)
 - `$ git push origin master` to push the commit to the master branch
+
+## Testing the CI flow
+
+### 1. Make a change in the code
+
+- in `auth/src/index.js` add a line of code, eg.: `console.log('Starting up...');`
+
+### 2. Commit code to a git branch
+
+- `$ git checkout -b dev` to checkout a branch called dev
+- `$ git status` to see the files that have been changed
+-
