@@ -36,14 +36,3 @@ This application is implemented using microservices architecture and exposes sim
 ### 6. Introduce a lot of code to handle concurrency issues
 
 - this is an important item that will allow us to have data consistency.
-
-### Testing all services
-
-In order to test all the services on **pull request** we have 2 options:
-
-- For each service add a `run` step inside `/.github/workflows/tests.yaml` Github action file:
-  - in this case all steps are run sequentially
-- For each service create inside `/.github/workflows/` a separate Github action file:
-  - in this case all tests are run in parallel (better option)
-
-NOTE: Sometimes,when you add a new workflow, Github does not want to process it right away. So if noting happens for more than 5 minutes you should cancel the current workflow, go to your branch, do a change, commit and push the change and tahn Github will execute all the workflows for your pull request.

@@ -116,3 +116,16 @@ NOTE: In `auth` project we have added a `test:ci` npm script in order to make su
   - add a comment
   - select **Create pull request**
   - now all steps for installing and running tests should run
+
+### Testing all services
+
+In order to test all the services on **pull request** we have 2 options:
+
+- For each service add a `run` step inside `/.github/workflows/tests.yaml` Github action file:
+  - in this case all steps are run sequentially
+- For each service create inside `/.github/workflows/` a separate Github action file:
+  - in this case all tests are run in parallel (better option)
+
+NOTE: Sometimes,when you add a new workflow, Github does not want to process it right away. So if noting happens for more than 5 minutes you should cancel the current workflow, go to your branch, do a change, commit and push the change and tahn Github will execute all the workflows for your pull request.
+
+A workflow file should run only when changes are done to code that is under test. For example it would be a waste of resources tu run tests for `auth service` when we have pushed changes related to `orders service`
