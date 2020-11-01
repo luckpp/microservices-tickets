@@ -95,5 +95,24 @@ NOTE: In `auth` project we have added a `test:ci` npm script in order to make su
 ### 2. Commit code to a git branch
 
 - `$ git checkout -b dev` to checkout a branch called dev
-- `$ git status` to see the files that have been changed
--
+- `$ git status`
+- `$ git add .`
+- `$ git commit -m "added startup message"`
+
+### 3. Push branch to Github
+
+- `$ git push origin dev`
+
+### 4. Github receives updated branch
+
+- as a result of the previous command. Github receives updated branch
+
+### 5. Manually create a pull request to merge branch into master
+
+- go to Github repository page:
+  - select **Pull request -> New pull request**
+  - select the appropriate branches (`master` <- `dev`)
+  - select **Create pull request**
+  - add a comment
+  - select **Create pull request**
+  - now all steps for installing and running tests should run
