@@ -75,3 +75,12 @@ jobs: # defines the things we want to do whenever a pull_request is created, reo
       - uses: actions/checkout@v2 # we will take all the code out of our project
       - run: cd auth && npm install && npm run test:ci # the series of commands that will run inside of our project
 ```
+
+NOTE: In `auth` project we have added a `test:ci` npm script in order to make sure that the tests are not run in watch mode and are run only once.
+
+### How to commit the code:
+
+- `$ git status` allows to see the files that have been changed
+- `$ git add .` to add those files to the next commit
+- `$ git commit -m "added CI test script"` to commit
+- `$ git push origin master` to push the commit to the master branch
