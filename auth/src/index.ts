@@ -3,6 +3,8 @@ import mongoose from 'mongoose';
 import { app } from './app';
 
 const start = async () => {
+  console.log('Starting up...');
+
   // Here would be a good place to init a config object and use it to access the Env Variables
   if (!process.env.JWT_KEY) {
     throw new Error('JWT_KEY must be defined');

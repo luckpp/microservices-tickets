@@ -78,9 +78,54 @@ jobs: # defines the things we want to do whenever a pull_request is created, reo
 
 NOTE: In `auth` project we have added a `test:ci` npm script in order to make sure that the tests are not run in watch mode and are run only once.
 
-### How to commit the code:
+## How to commit the code
 
 - `$ git status` allows to see the files that have been changed
 - `$ git add .` to add those files to the next commit
 - `$ git commit -m "added CI test script"` to commit
+- `$ git pull origin master` to pull any existing changes (optional)
 - `$ git push origin master` to push the commit to the master branch
+
+## Testing the CI flow
+
+### 1. Make a change in the code
+
+- in `auth/src/index.js` add a line of code, eg.: `console.log('Starting up...');`
+
+### 2. Commit code to a git branch
+
+- `$ git checkout -b dev` to checkout a branch called dev
+- `$ git status`
+- `$ git add .`
+- `$ git commit -m "added startup message"`
+
+### 3. Push branch to Github
+
+- `$ git push origin dev`
+
+### 4. Github receives updated branch
+
+- as a result of the previous command. Github receives updated branch
+
+### 5. Manually create a pull request to merge branch into master
+
+- go to Github repository page:
+  - select **Pull request -> New pull request**
+  - select the appropriate branches (`master` <- `dev`)
+  - select **Create pull request**
+  - add a comment
+  - select **Create pull request**
+  - now all steps for installing and running tests should run
+
+### Testing all services
+
+In order to test all the services on **pull request** we have 2 options:
+
+- For each service add a `run` step inside `/.github/workflows/tests.yaml` Github action file:
+  - in this case all steps are run sequentially
+- For each service create inside `/.github/workflows/` a separate Github action file:
+  - in this case all tests are run in parallel (better option)
+
+NOTE: Sometimes,when you add a new workflow, Github does not want to process it right away. So if noting happens for more than 5 minutes you should cancel the current workflow, go to your branch, do a change, commit and push the change and tahn Github will execute all the workflows for your pull request.
+
+A workflow file should run only when changes are done to code that is under test. For example it would be a waste of resources tu run tests for `auth service` when we have pushed changes related to `orders service`
