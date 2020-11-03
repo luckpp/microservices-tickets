@@ -128,4 +128,47 @@ In order to test all the services on **pull request** we have 2 options:
 
 NOTE: Sometimes,when you add a new workflow, Github does not want to process it right away. So if noting happens for more than 5 minutes you should cancel the current workflow, go to your branch, do a change, commit and push the change and tahn Github will execute all the workflows for your pull request.
 
-A workflow file should run only when changes are done to code that is under test. For example it would be a waste of resources tu run tests for `auth service` when we have pushed changes related to `orders service`
+A workflow file should run only when changes are done to code that is under test. For example it would be a waste of resources tu run tests for `auth service` when we have pushed changes related to `orders service`.
+
+# Deployment
+
+In order to deploy our application we need to choose a hosting provider and create a new Kubernetes cluster.
+
+Providers (the prices have been calculated in mid 2020 for 3 nodes, 2 GB RAM, 1 CPU plus extras):
+
+- Digital Ocean
+  - 40\$ / month
+  - really easy to use
+- AWS
+  - 126\$ / month
+  - Hardest
+- Google Cloud
+  - 113\$ / month
+  - easy
+- Azure
+  - 72\$ / month
+  - easy
+
+NOTE: AWS and Google Cloud charge you money just to run a Kubernetes cluster without any virtual machine inside. Whenever we run Kubernetes we have the Master Node or the Control Plane. This is a process that evaluates and watches your cluster and make sure that it is doing everything correctly (monitors pods, creates pods, creates services, ...). AWS and Google Cloud make you pay mony for the Master Node (now is 10 Cent/Hour).
+
+For the current project I will use **Digital Ocean**.
+
+If you are using **Digital Ocean** for the first time you should do a Google search for **Digital Ocean Cupon Code**.
+
+In order to create a Digital Ocean account:
+https://www.digitalocean.com/
+https://try.digitalocean.com/freetrialoffer/
+
+References on how to create a Kubernetes cluster on Digital Ocean:
+https://www.udemy.com/course/microservices-with-node-js-and-react/learn/lecture/19989406
+
+Reference on how to install doctl:
+https://www.udemy.com/course/microservices-with-node-js-and-react/learn/lecture/19989412
+
+Reference setup kubectl context to connect to the Digital Ocean cluster that we have created:
+https://www.udemy.com/course/microservices-with-node-js-and-react/learn/lecture/19989418
+
+- to add the Digital Ocean context: `$ doctl kubernetes cluster kubeconfig save my-tickets`
+
+Reference on how to add Github deploy action:
+https://www.udemy.com/course/microservices-with-node-js-and-react/learn/lecture/19989430
