@@ -155,20 +155,20 @@ For the current project I will use **Digital Ocean**.
 
 If you are using **Digital Ocean** for the first time you should do a Google search for **Digital Ocean Cupon Code**.
 
-In order to create a Digital Ocean account:
-https://www.digitalocean.com/
-https://try.digitalocean.com/freetrialoffer/
+- In order to create a Digital Ocean account:
+  https://www.digitalocean.com/
+  https://try.digitalocean.com/freetrialoffer/
 
-References on how to create a Kubernetes cluster on Digital Ocean:
-https://www.udemy.com/course/microservices-with-node-js-and-react/learn/lecture/19989406
+- References on how to create a Kubernetes cluster on Digital Ocean:
+  https://www.udemy.com/course/microservices-with-node-js-and-react/learn/lecture/19989406
 
-Reference on how to install doctl:
-https://www.udemy.com/course/microservices-with-node-js-and-react/learn/lecture/19989412
+- Reference on how to install doctl:
+  https://www.udemy.com/course/microservices-with-node-js-and-react/learn/lecture/19989412
 
-Reference setup kubectl context to connect to the Digital Ocean cluster that we have created:
-https://www.udemy.com/course/microservices-with-node-js-and-react/learn/lecture/19989418
+- Reference setup kubectl context to connect to the Digital Ocean cluster that we have created:
+  https://www.udemy.com/course/microservices-with-node-js-and-react/learn/lecture/19989418
 
-- to add the Digital Ocean context: `$ doctl kubernetes cluster kubeconfig save my-tickets`
+  - to add the Digital Ocean context: `$ doctl kubernetes cluster kubeconfig save my-tickets`
 
-Reference on how to add Github deploy action:
-https://www.udemy.com/course/microservices-with-node-js-and-react/learn/lecture/19989430
+- Reference on how to add Github deploy action:
+  https://www.udemy.com/course/microservices-with-node-js-and-react/learn/lecture/19989430
