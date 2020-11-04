@@ -29,5 +29,3 @@ In order to define the Kubernetes secrets on the local cluster run the following
 - `$ kubectl config view` (just to view your configuration file)
 - `$ kubectl create secret generic jwt-secret --from-literal=JWT_KEY={the_jwt_key}`
 - `$ kubectl create secret generic stripe-secret --from-literal=STRIPE_KEY={the_stripe_api_private_key}`
-
-kubectl create secret generic stripe-secret --from-literal=STRIPE_KEY=sk_test_51HgnuUEL5IIc4jWwhDWBtTGLgYYY9rJC8y6KO7ypLTCH6K86jZEAntjVUVQZ17n5VEd0gw75nP9ynjxgfmKhAmyn00ijyRLfzX
