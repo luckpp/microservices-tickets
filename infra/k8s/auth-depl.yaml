@@ -15,7 +15,6 @@ spec:
       containers:
         - name: auth
           image: luckpp/auth
-          imagePullPolicy: Never
           env:
             - name: MONGO_URI
               value: "mongodb://auth-mongo-srv:27017/auth"

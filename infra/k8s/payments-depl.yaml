@@ -15,7 +15,6 @@ spec:
       containers:
         - name: payments
           image: luckpp/payments
-          imagePullPolicy: Never
           env:
             - name: NATS_URL
               value: 'http://nats-srv:4222'
