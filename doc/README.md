@@ -172,3 +172,18 @@ If you are using **Digital Ocean** for the first time you should do a Google sea
 
 - Reference on how to add Github deploy action:
   https://www.udemy.com/course/microservices-with-node-js-and-react/learn/lecture/19989430
+
+# Buying a domain name
+
+References:
+
+- https://www.udemy.com/course/microservices-with-node-js-and-react/learn/lecture/19989500
+- https://www.udemy.com/course/microservices-with-node-js-and-react/learn/lecture/19989504
+
+When going to **Digital Ocean -> Networking -> Load Balancers** you will notice that you will have a **load balancer** automatically created by `ingress-nginx` when we created `ingress-nginx` inside of our cluster.
+
+This **load balancer** is directing traffic into the cluster.
+
+This **load balancer** IP address is listed at the top of the page. We have to buy a domain name and than point it at the **load balancer** that was created for us automatically.
+
+For buying a domain name I will use: https://www.namecheap.com/.
