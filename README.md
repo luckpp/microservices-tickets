@@ -36,3 +36,46 @@ This application is implemented using microservices architecture and exposes sim
 ### 6. Introduce a lot of code to handle concurrency issues
 
 - this is an important item that will allow us to have data consistency.
+
+# Running the application
+
+## Running on local machine
+
+In order to properly run the application on local machine we will use the `skaffold` tool.
+
+In order for `skaffold` to properly run make sure that the following lines of code are active:
+
+### In client project
+
+In `client/api/build-client.ts` make sure you have the `baseUrl` set as follows:
+
+```ts
+return axios.create({
+  baseURL: 'http://ingress-nginx-controller.kube-system.svc.cluster.local',
+  headers: req.headers,
+});
+```
+
+Explanation:
+
+- **Next JS** will be used for server-side rendering
+- when rendering on server-side, the client code will need to fetch data (like the current user) from other services hosted on Kubernetes cluster
+- in order to properly fetch data we will use **cross namespace service communication** (all explanation done in the following article: https://luckpp.wordpress.com/2020/10/06/kubernetes-cross-namespace-service-communication/)
+
+### In auth|expiration|orders|payments|tickets projects
+
+- inside the `auth|expiration|orders|payments|tickets /src/app.ts` make sure you have:
+
+```ts
+app.use(
+  cookieSession({
+    signed: false,
+    secure: process.env.NODE_ENV !== 'test',
+  })
+);
+```
+
+Explanation:
+
+- we want to use cookies only if the user is visiting our application over HTTPS connection
+- note that when running the services with `skaffold` on `minikube` a x509:certificate signed by unknown authority will be used for https communication

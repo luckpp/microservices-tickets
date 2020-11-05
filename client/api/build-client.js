@@ -8,7 +8,7 @@ export default ({ req }) => {
   if (typeof window === 'undefined') {
     // we are on the server
     return axios.create({
-      // the line below should be un-commented when running on Minikube
+      // the line below should be un-commented when running code with `skaffold`
       // baseURL: 'http://ingress-nginx-controller.kube-system.svc.cluster.local',
       baseURL: 'http://www.luckpp-tickets.xyz',
       headers: req.headers,
