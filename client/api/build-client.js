@@ -8,7 +8,9 @@ export default ({ req }) => {
   if (typeof window === 'undefined') {
     // we are on the server
     return axios.create({
-      baseURL: 'http://ingress-nginx-controller.kube-system.svc.cluster.local',
+      // the line below should be un-commented when running on Minikube
+      // baseURL: 'http://ingress-nginx-controller.kube-system.svc.cluster.local',
+      baseURL: 'http://www.luckpp-tickets.xyz',
       headers: req.headers,
     });
   } else {
