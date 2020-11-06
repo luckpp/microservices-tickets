@@ -79,3 +79,56 @@ Explanation:
 
 - we want to use cookies only if the user is visiting our application over HTTPS connection
 - note that when running the services with `skaffold` on `minikube` a x509:certificate signed by unknown authority will be used for https communication
+
+---
+
+## Running in the cloud
+
+In order to deploy the application in the cloud the following providers have been used:
+
+- **Digital Ocean** (https://www.digitalocean.com/) in order to host a Kubernetes cluster in the cloud
+- **namecheap** (https://www.namecheap.com/) in order to buy a domain name
+
+NOTES:
+
+- for **Digital Ocean** I used a coupon code for a machine with 3 nodes
+- on **namecheap** I a domain name (http://www.luckpp-tickets.xyz) but the subscription does not include HTTPS
+
+In order for to properly run the app in the cloud make sure that the following lines of code are active:
+
+### In client project
+
+In `client/api/build-client.ts` make sure you have the `baseUrl` set as follows:
+
+```ts
+return axios.create({
+  baseURL: 'http://www.luckpp-tickets.xyz',
+  headers: req.headers,
+});
+```
+
+Explanation:
+
+- **Next JS** will be used for server-side rendering
+- when rendering on server-side, the client code will need to fetch data (like the current user) from other services hosted on Kubernetes cluster
+- in order to properly fetch data we will use **cross namespace service communication**
+- there is currently a bug with ingress-nginx on Digital Ocean. More about this bug here:
+  - https://github.com/digitalocean/digitalocean-cloud-controller-manager/blob/master/docs/controllers/services/examples/README.md#accessing-pods-over-a-managed-load-balancer-from-inside-the-cluster
+  - https://www.udemy.com/course/microservices-with-node-js-and-react/learn/lecture/20144736
+
+### In auth|expiration|orders|payments|tickets projects
+
+- inside the `auth|expiration|orders|payments|tickets /src/app.ts` make sure you have:
+
+```ts
+app.use(
+  cookieSession({
+    signed: false,
+    secure: false,
+  })
+);
+```
+
+Explanation:
+
+- we want to use cookies also if the user is visiting our application over HTTP connection (remember that my **namecheap** subscription for 'http://www.luckpp-tickets.xyz' does not include HTTPS)
