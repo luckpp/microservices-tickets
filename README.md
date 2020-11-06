@@ -131,4 +131,33 @@ app.use(
 
 Explanation:
 
-- we want to use cookies also if the user is visiting our application over HTTP connection (remember that my **namecheap** subscription for 'http://www.luckpp-tickets.xyz' does not include HTTPS)
+- we want to use cookies also if the user is visiting our application over HTTP connection (remember that my **namecheap** subscription for http://www.luckpp-tickets.xyz does not include HTTPS)
+
+# Expand the application
+
+## Add HTTPS
+
+- have a look at https://cert-manager.io/
+- this is an open source library that makes easy to add HTTPS support for a Kubernetes cluster that uses `ingress-nginx`
+
+## Add Email Support
+
+- for example after an user purchases a ticket, send him an e-mail
+- we could create a service and use 3rd party e-mail provider:
+  - **Mailchimp**
+  - **SendGrid**
+
+## Add a 'build' step
+
+- currently all of our services inside the production cluster are technically running in **development** mode (they use `ts-node-dev`) and the `Next JS` app is running in **development** mode as well
+- we can speed up the services by running them in **production** mode:
+  - create a separate `Dockerfile` for each service and use for the execution command `node src/index.js`
+  - create a separate `Dockerfile` for the `Next JS` app and run inside it a command that will build the app
+
+## Create a staging cluster
+
+- this is a cluster where other team-members can test out our application
+- create another cluster on Digital Ocean with a new domain name, and make it accessible only for team-members
+- create a **staging branch** on our Github repository and tie new workflow scripts to it:
+  - whenever someone pushes code to this **staging branch** we will deploy the app to the **staging cluster**
+- in this way people can test the app before we merge our code into the **master branch**

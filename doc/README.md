@@ -187,3 +187,13 @@ This **load balancer** is directing traffic into the cluster.
 This **load balancer** IP address is listed at the top of the page. We have to buy a domain name and than point it at the **load balancer** that was created for us automatically.
 
 For buying a domain name I will use: https://www.namecheap.com/.
+
+# Shut down the Kubernetes cluster on Digital Ocean
+
+- on https://www.digitalocean.com/ go to the Control Pannel
+- go to **Networking -> Load Balancers**
+  - pick the Load Balancer to shut down and click **More -> Destroy**
+  - note that a Load Balancer costs around 10 \$ / month
+- go to **Kubernetes**
+  - pick the cluster to shut down and click **More -> Destroy**
+  - note that a a Kubernetes cluster with 3 nodes costs around 30 \$ / month
