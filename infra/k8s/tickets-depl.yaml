@@ -15,6 +15,7 @@ spec:
       containers:
         - name: tickets
           image: luckpp/tickets
+          imagePullPolicy: Never
           env:
             - name: NATS_URL
               value: 'http://nats-srv:4222'

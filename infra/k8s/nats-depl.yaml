@@ -15,6 +15,7 @@ spec:
       containers:
         - name: nats
           image: nats-streaming:0.17.0
+          imagePullPolicy: Never
           args: # array of arguments to provide to the primary command that geets executed when a container is built out of our image
             [
               "-p",
