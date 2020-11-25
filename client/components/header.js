@@ -25,7 +25,7 @@ export default ({ currentUser }) => {
   return (
     <nav className="navbar navbar-light bg-light">
       <Link href="/">
-        <a className="navbar-brand">luckpp-tickets</a>
+        <a className="navbar-brand">luckpp tickets</a>
       </Link>
       <div className="d-flex justify-content-end">
         <ul className="nav d-flex align-items-center">{links}</ul>
