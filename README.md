@@ -161,3 +161,6 @@ Explanation:
 - create a **staging branch** on our Github repository and tie new workflow scripts to it:
   - whenever someone pushes code to this **staging branch** we will deploy the app to the **staging cluster**
 - in this way people can test the app before we merge our code into the **master branch**
+
+
+Comment 1
